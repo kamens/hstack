@@ -22,14 +22,13 @@ Every time, I'm re-doing prompts from scratch. Re-explaining context. Re-buildin
 
 ## Install
 
-```bash
-git clone https://github.com/kamens/hstack ~/hstack
-cd ~/hstack && ./install.sh
-```
+Open Claude Code and paste this. Claude does the rest.
 
-The install script symlinks each skill into `~/.claude/skills/`. Start a new Claude Code session and the four `/health-*` commands are available immediately.
+> Install hstack: run **`git clone https://github.com/kamens/hstack ~/hstack && cd ~/hstack && ./install.sh`**
 
-You can clone to any directory — `./install.sh` creates the symlinks regardless of where the repo lives.
+Start a new Claude Code session and the four `/health-*` commands are available immediately.
+
+Or run it yourself in a terminal — same command, same result.
 
 ## Your specialists
 

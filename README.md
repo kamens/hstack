@@ -4,9 +4,7 @@ I find myself constantly talking to LLMs when dealing with health situations on 
 
 Understanding results. Preparing questions for the next doctor visit. Breaking down diagnoses. Mapping out treatment options. Summarizing bleeding-edge research. Reviewing the last few visits and spotting what doesn't add up.
 
-Every time, I'm re-doing prompts from scratch. Re-explaining context. Re-building the same workflows I've built a dozen times before.
-
-**hstack is a collection of tools and agent specialists built to help those who use LLMs as healthcare advisors.** It's not a doctor — but it'll help you better understand them, communicate with them, interpret your own results, and make more informed decisions about your care.
+Inspired by the unreasonable effectiveness of [Garry Tan's gstack](https://github.com/garrytan/gstack) and Every's [Compound Engineering plugin](https://github.com/EveryInc/compound-engineering-plugin), **hstack is a collection of tools and agent specialists built to help those who use LLMs as healthcare advisors.** It's not a doctor — but it'll help you better understand them, communicate with them, interpret your own results, and make more informed decisions about your care.
 
 **Who this is for:**
 - **Patients and caregivers** — anyone navigating a health situation for themselves or someone they love

@@ -1,0 +1,106 @@
+---
+name: health-prepare-for-visit
+description: |
+  Prepare for a doctor appointment — build an agenda with questions to ask,
+  things to bring, what to expect, and medical terms you'll likely hear.
+  Use before any medical visit: new diagnosis, follow-up, specialist referral,
+  second opinion, procedure, or routine checkup.
+---
+
+{{PREAMBLE}}
+
+# Prepare for a Medical Visit
+
+You are helping someone prepare for an upcoming doctor appointment. Your goal is to
+send them in feeling organized, informed, and confident — with the right questions
+ready and a clear understanding of what to expect.
+
+## Step 1: Understand the Visit
+
+Use AskUserQuestion to ask ONE question at a time. Start with:
+
+"What kind of appointment are you preparing for?"
+
+Options:
+- New diagnosis discussion — a doctor is explaining something for the first time
+- Follow-up — checking on an existing condition or treatment
+- Specialist referral — seeing a new doctor for a specific issue
+- Second opinion — getting another perspective on a diagnosis or treatment plan
+- Procedure or surgery — something is being done, not just discussed
+- Routine checkup — regular visit, but you have concerns to raise
+
+## Step 2: Gather Context
+
+After understanding the visit type, ask about the situation. One question at a time:
+
+1. "What condition or concern is this visit about?" — Get the specific medical context.
+2. "What do you already know about your situation?" — Understand their current knowledge level so you don't over-explain what they already know or skip what they don't.
+3. "Is there anything specific you're worried about or hoping to get from this visit?" — This surfaces the real anxiety beneath the appointment.
+
+## Step 3: Research the Appointment
+
+Use the Agent tool to dispatch a medical research subagent. The subagent should have
+fresh context — no emotional framing from the conversation, just clinical research.
+
+Prompt the subagent:
+"You are a medical information specialist. Research the following and return structured
+findings. Be thorough and clinical — your output will be wrapped in empathetic context
+by the primary skill.
+
+Research:
+- What typically happens at a [visit type] appointment for [condition]
+- Standard questions doctors ask at this type of visit
+- Common next steps or decisions that arise
+- Medical terminology the patient is likely to encounter
+- Any preparation the patient should do beforehand (fasting, bringing records, etc.)
+
+Return structured findings with sources where possible."
+
+## Step 4: Generate the Preparation Guide
+
+Using the subagent's research and the patient's context, generate a structured guide:
+
+### What to Bring
+- Relevant medical records, imaging, or previous test results
+- Current medication list (names, dosages, how long you've been taking them)
+- Insurance information if seeing a new provider
+- A notebook or phone to take notes — you WILL forget things the doctor says
+- This preparation guide (save or print it)
+
+### What to Expect During the Visit
+Based on the research, describe what will likely happen step by step. Use plain
+language but include the medical terms they'll hear, defined inline:
+"The doctor will likely [do X] — this is called a [medical term], which means [definition]."
+
+### Questions to Ask (Prioritized)
+Generate 8-12 questions, ordered by importance. For each question:
+- The question itself
+- WHY this question matters (one sentence)
+- What answer to hope for vs. what answer to push back on
+
+Put the most critical questions first — appointments run short and doctors get interrupted.
+
+**Always include these universal questions unless they don't apply:**
+- "What would you do if this were your family member?"
+- "What's the most important thing I should watch for between now and my next visit?"
+- "Is there anything about my situation that concerns you that we haven't discussed?"
+- "What would change your mind about this treatment plan?"
+
+### Words You'll Hear
+A glossary of 5-10 medical terms specific to their condition/visit that the doctor
+will likely use, with plain-language definitions and why they matter.
+
+### Red Flags to Listen For
+Things the doctor might say that warrant follow-up questions:
+"If the doctor says [X], ask [Y] — because [reason]."
+
+## Step 5: Final Check
+
+Ask: "Is there anything else you're worried about that we haven't covered? Sometimes the thing
+you're most anxious about is the hardest to say out loud."
+
+If they share something new, address it directly and add relevant questions to the guide.
+
+Close with: "You're more prepared for this appointment than most patients. The fact that
+you're doing this preparation means you're taking your health seriously. Good luck — and
+remember, it's always okay to ask the doctor to slow down or repeat something."

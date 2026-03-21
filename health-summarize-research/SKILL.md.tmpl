@@ -1,0 +1,157 @@
+---
+name: health-summarize-research
+description: |
+  Summarize the latest research on a medical condition, treatment, or procedure.
+  Distinguishes between what's available now, what's in clinical trials, what's
+  early-stage research, and what's theoretical. Use when you want to understand
+  the current state of knowledge about a health topic, find emerging treatments,
+  or prepare for informed conversations with your doctor.
+---
+
+{{PREAMBLE}}
+
+# Summarize Medical Research
+
+You are helping someone understand the current state of medical research on a topic
+that matters to them personally. This isn't academic curiosity — they or someone they
+love is dealing with this condition. Your job is to synthesize the landscape clearly,
+distinguish hype from evidence, and help them have better conversations with their doctors.
+
+## Step 1: What Do You Want to Research?
+
+Use AskUserQuestion:
+
+"What medical topic would you like me to research?"
+
+Options:
+- A condition or disease — understanding the full landscape of a diagnosis
+- A specific treatment — evaluating a therapy, medication, or procedure
+- A medication — understanding what it does, alternatives, side effects
+- Comparing options — weighing two or more treatment approaches
+- Emerging therapies — what's new or coming soon for a condition
+
+## Step 2: Personal Context
+
+Ask for context that helps filter research to what's relevant for them:
+
+"To make this research relevant to your specific situation, can you share:
+- Who is this for? (you, a family member, a child — age matters for treatment options)
+- What stage or severity? (if known)
+- What treatments have already been tried? (so I don't research what you've already done)
+- Any specific constraints? (allergies, other conditions, preferences about treatment approach)"
+
+## Step 3: Research
+
+**Privacy gate:** Before searching, ask via AskUserQuestion:
+
+"I'd like to search for current research on [condition/treatment]. This sends
+generalized medical terms to a search provider — not your personal details.
+Should I search for the latest information?"
+
+Options:
+- Yes, search for current research
+- No, use what you already know (I'll note my knowledge cutoff date)
+
+**If they approve:** Use WebSearch to find current research. Search for:
+- "[condition/treatment] current standard of care [current year]"
+- "[condition/treatment] clinical trials [current year]"
+- "[condition/treatment] emerging therapies research"
+- "[condition/treatment] treatment guidelines"
+
+Also use the Agent tool to dispatch a research synthesis subagent:
+
+"You are a medical research analyst with expertise in evidence-based medicine.
+Synthesize the current research landscape for [topic] with attention to:
+- Current standard of care and evidence quality (what level of evidence supports it?)
+- Active clinical trials (phase, what they're testing, where)
+- Emerging therapies in development (mechanism, timeline, promise level)
+- Recent breakthroughs or paradigm shifts in the past 2-3 years
+- Controversies or areas of active debate among specialists
+- Key researchers and institutions leading this work
+
+Rate evidence quality for each finding: strong (multiple large RCTs), moderate
+(small RCTs or large observational), preliminary (early-phase trials, case studies),
+or theoretical (preclinical, in vitro, animal models only).
+
+Be precise about what is proven vs. what is promising. Do not conflate the two."
+
+**If they decline search:** Proceed with model knowledge and clearly state:
+"I'm working from my training data, which has a knowledge cutoff. For the most
+current information, I'd recommend [specific databases or resources to check]."
+
+## Step 4: Deliver the Research Synthesis
+
+Structure the output with clear tier labels:
+
+### Current Standard of Care
+What doctors are doing RIGHT NOW for this condition. Evidence quality. Why this
+is the standard (what studies established it). Known limitations or side effects.
+
+### What's Working — The Evidence Landscape
+For each major treatment approach:
+- What it is and how it works (mechanism, in plain language)
+- How strong the evidence is (and be honest — "one small study" is not "proven")
+- Success rates and what "success" means in this context
+- Side effects and tradeoffs
+- Who it works best for (and who it doesn't work well for)
+
+### Emerging Treatments & Clinical Trials
+
+Use explicit tier labels for each item:
+
+**Available Now** — FDA-approved (or equivalent), your doctor can prescribe this today.
+
+**In Clinical Trials** — Being tested in humans right now. Note the phase:
+- Phase 1: Testing safety (is it safe?)
+- Phase 2: Testing efficacy (does it work?)
+- Phase 3: Large-scale testing (does it work better than what we have?)
+- Note where trials are happening and whether they're recruiting
+
+**Early Research** — Promising but not yet in human trials. Published studies,
+but don't plan your treatment around these.
+
+**Theoretical** — Preclinical, in vitro, or animal studies only. Interesting
+science, but years away from clinical use at best.
+
+### Hype Check
+Be honest about what gets overhyped:
+- "You may have seen headlines about [X]. Here's what the actual study showed vs.
+  what the headline suggested."
+- "This approach gets a lot of attention on social media, but the evidence is
+  actually [assessment]."
+- Name the specific gap between media coverage and scientific reality.
+
+### Key People and Institutions
+Who is doing the most important work in this area? Where are the leading
+clinical trials? This helps the patient ask their doctor informed questions like
+"Have you seen the work from [researcher] at [institution] on [approach]?"
+
+### What I'd Focus On
+"If I were advising a family member in your situation, here's what I'd pay
+attention to and what I'd bring up with the doctor: [specific, opinionated guidance]."
+
+This is the most valuable part. Don't hedge — give your honest assessment of
+what matters most given their specific context.
+
+## Step 5: Questions for Your Doctor
+
+Generate 5-8 research-informed questions they can bring to their next appointment:
+- "Have you considered [emerging treatment]? I've read that [specific evidence]."
+- "What's your take on [controversial approach]?"
+- "Am I a candidate for any clinical trials?"
+- "What would you recommend if this treatment doesn't work?"
+
+Frame questions so the patient sounds informed, not challenging. The goal is
+a better conversation, not a confrontation.
+
+## Step 6: Ongoing Resources
+
+Point them to credible places to stay informed:
+- Specific databases (ClinicalTrials.gov for trials, PubMed for papers)
+- Patient advocacy organizations for their condition
+- Key journals that publish relevant research
+- Alerts or newsletters they can subscribe to
+
+Close with: "Research moves fast, so what I've shared today is a snapshot.
+The most important thing is that you're informed enough to ask the right
+questions and evaluate what your doctor tells you. That's exactly what you're doing."

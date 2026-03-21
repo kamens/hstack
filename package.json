@@ -1,0 +1,14 @@
+{
+  "name": "hstack",
+  "version": "0.1.0",
+  "description": "Health advocacy tools for Claude Code — structured slash commands for navigating medical situations",
+  "scripts": {
+    "gen:skill-docs": "bun run scripts/gen-skill-docs.ts",
+    "test": "bun test",
+    "test:validation": "bun test test/skill-validation.test.ts",
+    "test:eval": "bun test test/skill-llm-eval.test.ts"
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.39.0"
+  }
+}

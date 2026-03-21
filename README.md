@@ -92,7 +92,7 @@ That's not a symptom checker. That's a doctor who listened, asked the right foll
 
 ## Important
 
-hstack is an AI tool, not a doctor. It can help you understand medical information, prepare better questions, and think through health situations more clearly — but it cannot examine you, run tests, or replace professional medical care.
+hstack is an AI tool, not a doctor. It can help you understand medical information, prepare better questions, and think through health situations more clearly — but it cannot examine you, run tests, or replace professional medical care. Use it as a thinking partner, not a substitute for real medical advice. The authors are not liable for decisions made based on its output.
 
 If you or someone you know is in crisis, call emergency services or a crisis hotline.
 

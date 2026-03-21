@@ -1,6 +1,3 @@
-<!-- AUTO-GENERATED from SKILL.md.tmpl — do not edit directly -->
-<!-- Regenerate: bun run gen:skill-docs -->
-
 ---
 name: health-summarize-research
 description: |
@@ -10,6 +7,9 @@ description: |
   the current state of knowledge about a health topic, find emerging treatments,
   or prepare for informed conversations with your doctor.
 ---
+<!-- AUTO-GENERATED from SKILL.md.tmpl — do not edit directly -->
+<!-- Regenerate: bun run gen:skill-docs -->
+
 
 ## The Voice
 

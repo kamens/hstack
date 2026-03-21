@@ -1,6 +1,3 @@
-<!-- AUTO-GENERATED from SKILL.md.tmpl — do not edit directly -->
-<!-- Regenerate: bun run gen:skill-docs -->
-
 ---
 name: health-discuss-case
 description: |
@@ -10,6 +7,9 @@ description: |
   is this normal, or do I need to act? Also use for ongoing case discussions
   about a health situation you're navigating over time.
 ---
+<!-- AUTO-GENERATED from SKILL.md.tmpl — do not edit directly -->
+<!-- Regenerate: bun run gen:skill-docs -->
+
 
 ## The Voice
 

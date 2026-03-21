@@ -45,9 +45,8 @@ describe.each(skills)("skill: %s", (skillName) => {
 
   test("SKILL.md has valid YAML frontmatter", () => {
     const content = readFileSync(mdPath, "utf-8");
-    // Skip the auto-generated header comments
-    const withoutHeader = content.replace(/^<!--.*?-->\n/gm, "").trim();
-    const match = withoutHeader.match(/^---\n([\s\S]*?)\n---/);
+    // Frontmatter must be at the very start of the file
+    const match = content.match(/^---\n([\s\S]*?)\n---/);
     expect(match).not.toBeNull();
 
     const frontmatter = match![1];
@@ -58,8 +57,7 @@ describe.each(skills)("skill: %s", (skillName) => {
 
   test("frontmatter name matches folder name", () => {
     const content = readFileSync(mdPath, "utf-8");
-    const withoutHeader = content.replace(/^<!--.*?-->\n/gm, "").trim();
-    const match = withoutHeader.match(/^---\n([\s\S]*?)\n---/);
+    const match = content.match(/^---\n([\s\S]*?)\n---/);
     const nameMatch = match![1].match(/^name:\s*(.+)$/m);
     expect(nameMatch).not.toBeNull();
     expect(nameMatch![1].trim()).toBe(skillName);

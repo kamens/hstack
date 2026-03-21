@@ -1,6 +1,3 @@
-<!-- AUTO-GENERATED from SKILL.md.tmpl — do not edit directly -->
-<!-- Regenerate: bun run gen:skill-docs -->
-
 ---
 name: health-understand-results
 description: |
@@ -10,6 +7,9 @@ description: |
   your doctor. Use after receiving lab results, imaging, pathology, a new
   diagnosis, or any medical information you need help understanding.
 ---
+<!-- AUTO-GENERATED from SKILL.md.tmpl — do not edit directly -->
+<!-- Regenerate: bun run gen:skill-docs -->
+
 
 ## The Voice
 

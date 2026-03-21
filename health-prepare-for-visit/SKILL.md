@@ -1,6 +1,3 @@
-<!-- AUTO-GENERATED from SKILL.md.tmpl — do not edit directly -->
-<!-- Regenerate: bun run gen:skill-docs -->
-
 ---
 name: health-prepare-for-visit
 description: |
@@ -9,6 +6,9 @@ description: |
   Use before any medical visit: new diagnosis, follow-up, specialist referral,
   second opinion, procedure, or routine checkup.
 ---
+<!-- AUTO-GENERATED from SKILL.md.tmpl — do not edit directly -->
+<!-- Regenerate: bun run gen:skill-docs -->
+
 
 ## The Voice
 

@@ -43,7 +43,7 @@ function resolve(name: string, tmplPath: string): string {
   return content;
 }
 
-const HEADER = "<!-- AUTO-GENERATED from SKILL.md.tmpl — do not edit directly -->\n<!-- Regenerate: bun run gen:skill-docs -->\n\n";
+const COMMENT = "\n<!-- AUTO-GENERATED from SKILL.md.tmpl — do not edit directly -->\n<!-- Regenerate: bun run gen:skill-docs -->\n";
 
 let exitCode = 0;
 
@@ -64,7 +64,8 @@ for (const tmplPath of templates) {
     process.exit(1);
   }
 
-  const final = HEADER + content;
+  // Insert comment AFTER frontmatter so Claude Code reads the description correctly
+  const final = content.replace(/^(---\n[\s\S]*?\n---)\n/, `$1${COMMENT}\n`);
 
   if (DRY_RUN) {
     if (!existsSync(outputPath)) {

@@ -8,8 +8,6 @@ Every time, I'm re-doing prompts from scratch. Re-explaining context. Re-buildin
 
 **hstack is a collection of tools and agent specialists built to help those who use LLMs as healthcare advisors.** It's not a doctor — but it'll help you better understand them, communicate with them, interpret your own results, and make more informed decisions about your care.
 
-Think of it as having a battle-hardened ER doctor on speed dial — one who's seen everything, gives you real talk, and knows the difference between "your anxiety is worse than your symptoms" and "get in the car now." Not an overly cautious chatbot that says "consult your doctor" to everything. A genuinely helpful guide who respects your intelligence and gives you real assessments.
-
 **Who this is for:**
 - **Patients and caregivers** — anyone navigating a health situation for themselves or someone they love
 - **The family health researcher** — the person everyone calls when they get confusing test results or need help understanding a diagnosis
@@ -20,7 +18,7 @@ Think of it as having a battle-hardened ER doctor on speed dial — one who's se
 1. Install hstack (30 seconds — see below)
 2. Run `/health-discuss-case` — describe something you're worried about. See how it responds.
 3. Run `/health-understand-results` — paste some test results or a diagnosis you've received.
-4. Stop there. You'll know if this is for you.
+4. Run `/health-prepare-for-visit` — tell it about an upcoming appointment and watch it build your agenda.
 
 ## Install
 
@@ -38,7 +36,7 @@ ln -s /path/to/your/hstack ~/.claude/skills/hstack
 
 ## Your specialists
 
-Four agent specialists, each with a specific role. They all share the same foundational voice — a battle-hardened ER doc who gives calibrated, honest, anxiety-aware guidance — but each brings a different expertise to the conversation.
+Four agent specialists, each with a specific role. They all share the same foundational voice — a battle-hardened ER doc who's also a patient advocate, a clinical results interpreter, and a scout for the latest R&D — but each brings a different expertise to the conversation.
 
 | Skill | Your specialist | What they do |
 |-------|----------------|--------------|
@@ -47,7 +45,7 @@ Four agent specialists, each with a specific role. They all share the same found
 | `/health-summarize-research` | **Latest R&D Scout** | Synthesizes the cutting edge of medical research — what's proven and available now, what's in clinical trials, what's early-stage, and what's hype. Brings back actionable intelligence for your next doctor conversation. |
 | `/health-discuss-case` | **ER Doc on Call** | The 3am tool. Something is happening and you need to know: is this normal, or do I need to act? Gives a clear red/yellow/green assessment — and knows when "you're okay" is the right answer. |
 
-Each specialist consults behind-the-scenes clinical subagents (a triage specialist, a lab interpreter, a research analyst) for unbiased clinical assessment, then delivers the findings with appropriate warmth. You get the precision of a clinical read and the empathy of a doctor who actually listens.
+Each specialist consults behind-the-scenes clinical subagents (a triage specialist, a lab interpreter, a research analyst, a medical information specialist), then delivers the findings with appropriate warmth.
 
 ## See it work
 
@@ -96,9 +94,7 @@ That's not a symptom checker. That's a doctor who listened, asked the right foll
 
 hstack is an AI tool, not a doctor. It can help you understand medical information, prepare better questions, and think through health situations more clearly — but it cannot examine you, run tests, or replace professional medical care.
 
-The skills are designed to be genuinely helpful rather than reflexively cautious. They will give you real assessments and honest guidance. They will also tell you to go to the ER when you need to, and they will tell you when a situation is beyond what AI can responsibly advise on.
-
-If you or someone you know is in crisis, call 911 or the 988 Suicide & Crisis Lifeline.
+If you or someone you know is in crisis, call emergency services or a crisis hotline.
 
 ## How it works
 

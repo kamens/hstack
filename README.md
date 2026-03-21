@@ -49,103 +49,88 @@ Real example using `/health-prepare-for-visit`:
 
 ```
 You:    /health-prepare-for-visit
-        8 year old daughter has intense leg pain in right side from hip
-        to knee. Struggled to walk but otherwise doesn't look sick. Went
-        to urgent care, they took xray and flu/covid tests and nothing
-        came up, told us to monitor closely in case of septic infection
-        in hip, which sounds scary. Should I take her to ER and what
-        do I ask?
+        8 year old daughter has intense leg pain from hip to knee.
+        Struggled to walk but otherwise doesn't look sick. Urgent care
+        took xray and flu/covid tests — nothing came up. Told us to
+        monitor for septic infection in hip, which sounds scary.
+        Should I take her to ER? What do I ask?
 
-hstack: Let me research this specific situation so I can give you
-        the most useful guidance.
+hstack: [asks about recent illness, fever, when pain started, whether
+         she can bear any weight...]
 
-        [dispatches medical research specialist — searches for pediatric
-         hip pain differentials, Kocher criteria for septic arthritis,
-         ER evaluation protocols, red flags vs. reassuring signs...]
+        [dispatches medical research specialist — researches pediatric
+         hip pain differentials, Kocher criteria, ER protocols...]
 
-        I'm an AI, not your daughter's doctor — I can't examine her and
-        I'm working only from what you've told me. But I can help you
-        think through this clearly, because right now you're scared and
-        that's making everything feel more urgent than it may actually be.
+        I'm an AI, not your daughter's doctor — but I can help you
+        think through this clearly, because right now you're scared
+        and that's making everything feel more urgent than it may be.
 
-        MY ASSESSMENT: THIS IS PROBABLY NOT AN EMERGENCY — BUT GETTING
-        LABS IS SMART
+        ASSESSMENT: PROBABLY NOT AN EMERGENCY — BUT GETTING LABS IS SMART
 
-        The most likely diagnosis is transient synovitis — temporary
-        inflammation of the hip joint. It's the single most common cause
-        of acute hip pain in kids your daughter's age...
+        The most likely diagnosis is transient synovitis — the single
+        most common cause of acute hip pain in kids her age...
+        "Monitor for it" and "she probably has it" are very different.
 
-        The reason urgent care mentioned septic arthritis is because it's
-        the one thing they have to rule out. That's good medicine on their
-        part, but "monitor for it" and "she probably has it" are very
-        different things.
-
-        Here's what's reassuring about your daughter's situation:
-        - No fever — this is the big one
-        - She doesn't look sick
-        - She can bear some weight
-        - X-ray was normal
-
-        There's a validated scoring system called the Kocher criteria...
-        your daughter likely has 0 or 1 of 4 criteria, which puts the
-        probability of septic arthritis at less than 3%.
+        Your daughter likely meets 0-1 of 4 Kocher criteria, which puts
+        the probability of septic arthritis at less than 3%.
 
         ...
 
         SHOULD YOU GO TO THE ER?
 
-        Go to the ER now if any of these happen:
-        - She develops a fever
-        - She stops being able to put any weight on the leg at all
-        - She starts looking sick — lethargic, inconsolable
-        - The pain gets significantly worse or isn't helped by ibuprofen
+        Go now if: fever develops, can't bear weight at all, starts
+        looking sick, or pain isn't helped by ibuprofen.
 
-        It's okay to wait and see your pediatrician in the morning if:
-        - No fever, resting comfortably, ibuprofen is helping
-        - She can still bear some weight and is acting like herself
+        OK to see pediatrician in the morning if: no fever, resting
+        comfortably, bearing some weight, acting like herself.
 
         ...
 
-        WHAT TO ASK AT THE ER (OR PEDIATRICIAN)
+        MUST-ASK QUESTIONS
 
-        1. "Can we get a CBC, CRP, and ESR drawn?" — These blood tests
-           score the Kocher criteria. If all three are normal, septic
+        1. "Can we get a CBC, CRP, and ESR?" — if all normal, septic
            arthritis is essentially ruled out.
-        2. "Can we get an ultrasound of her right hip?" — checks for
-           fluid in the joint. No fluid = very reassuring.
-        3. "Based on her Kocher criteria score, what's her probability
-           of septic arthritis?" — tells the doctor you've done your
-           homework and want a real number.
+        2. "Can we get a hip ultrasound?" — no fluid = very reassuring.
+        3. "What's her Kocher criteria score?" — tells the doctor you
+           want a real number, not just "we're monitoring."
+        4. "What specific symptoms should bring us back immediately?"
+        5. "Should we follow up with pediatric orthopedics?"
+
+        ...
+
+        WORDS YOU'LL HEAR
+
+        Transient synovitis — temporary hip inflammation. Most likely
+            diagnosis. Goes away on its own.
+        Septic arthritis — bacterial joint infection. Rare but serious.
+        Effusion — fluid in the joint. Present in both — so fluid
+            alone doesn't mean infection.
+        Kocher criteria — 4-factor scoring system that predicts
+            probability of septic arthritis.
+        CRP / ESR — blood inflammation markers. Normal = very reassuring.
+        Arthrotomy — surgical joint cleaning. Sounds scary but excellent
+            outcomes in kids.
 
         ...
 
         ABOUT THE SURGERY FEAR
 
-        I want to address this directly because I can tell it's weighing
-        on you. If — and this is a big "if" — she did turn out to have
-        septic arthritis: the surgery is a joint washout, not a joint
-        replacement. Kids bounce back remarkably fast. With early treatment,
-        full recovery is the expected outcome.
+        If — and this is a big "if" — she did have septic arthritis:
+        it's a joint washout, not a replacement. Kids bounce back fast.
+        Full recovery is the expected outcome with early treatment.
 
-        The fact that you went to urgent care today and are asking these
-        questions tonight means you're already ahead of the curve.
+        You went to urgent care today and are asking these questions
+        tonight. You're already ahead of the curve.
 
         TONIGHT'S GAME PLAN
 
-        1. Give ibuprofen at the right dose for her weight
-        2. Check her temperature every 3-4 hours
-        3. Watch for the red flags listed above
-        4. Call your pediatrician first thing in the morning — or go to
-           the ER tonight if you want the answers now and won't sleep
-           otherwise
+        1. Ibuprofen at the right dose for her weight
+        2. Check temperature every 3-4 hours
+        3. Watch for red flags above
+        4. Pediatrician first thing in the morning — or ER tonight if
+           you won't sleep otherwise
         5. "Parent can't sleep" is a legitimate reason to go to the ER
-           when a child's health is in question
-
-        Is there anything else you're worried about that we haven't
-        covered?
 ```
-
-That's not a symptom checker. That's a specialist who researched the specific condition, gave a calibrated assessment with real probabilities, told you exactly what to ask the doctor, addressed the fear you didn't fully say out loud, and gave you a concrete plan for tonight. That's hstack.
 
 ## Important
 

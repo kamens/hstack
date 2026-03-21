@@ -45,46 +45,107 @@ Each specialist consults behind-the-scenes clinical subagents (a triage speciali
 
 ## See it work
 
+Real example using `/health-prepare-for-visit`:
+
 ```
-You:    /health-discuss-case
-        My dad had heart surgery 3 days ago and now has a fever of 101.2.
-        His chest incision looks redder than before. Should I be worried?
+You:    /health-prepare-for-visit
+        8 year old daughter has intense leg pain in right side from hip
+        to knee. Struggled to walk but otherwise doesn't look sick. Went
+        to urgent care, they took xray and flu/covid tests and nothing
+        came up, told us to monitor closely in case of septic infection
+        in hip, which sounds scary. Should I take her to ER and what
+        do I ask?
 
-hstack: Before I give you my assessment, I need a few more details.
-        When did the fever start — today, or has it been building?
+hstack: Let me research this specific situation so I can give you
+        the most useful guidance.
 
-You:    Started this afternoon. He was fine this morning.
+        [dispatches medical research specialist — searches for pediatric
+         hip pain differentials, Kocher criteria for septic arthritis,
+         ER evaluation protocols, red flags vs. reassuring signs...]
 
-hstack: And is the redness around the incision spreading, or is it
-        about the same as yesterday? Any drainage or warmth to the touch?
+        I'm an AI, not your daughter's doctor — I can't examine her and
+        I'm working only from what you've told me. But I can help you
+        think through this clearly, because right now you're scared and
+        that's making everything feel more urgent than it may actually be.
 
-You:    It's a bit wider than yesterday. Warm but no drainage.
+        MY ASSESSMENT: THIS IS PROBABLY NOT AN EMERGENCY — BUT GETTING
+        LABS IS SMART
 
-hstack: OK. I want to be straight with you — post-surgical fever at
-        day 3 with expanding redness around the incision site is a
-        YELLOW. This doesn't need the ER tonight, but it needs
-        attention tomorrow morning.
+        The most likely diagnosis is transient synovitis — temporary
+        inflammation of the hip joint. It's the single most common cause
+        of acute hip pain in kids your daughter's age...
 
-        Here's why I'm not saying red: 101.2 is low-grade, there's
-        no drainage, and some incision-site inflammation is normal
-        healing. But the combination of fever + expanding redness
-        is the pattern we watch for with surgical site infections.
+        The reason urgent care mentioned septic arthritis is because it's
+        the one thing they have to rule out. That's good medicine on their
+        part, but "monitor for it" and "she probably has it" are very
+        different things.
 
-        What to do:
-        - Call the surgeon's office first thing tomorrow
-        - Tell them: "3 days post-op, new fever of 101.2, incision
-          redness is spreading"
-        - Monitor tonight: if fever goes above 102, or if you see
-          any drainage, redness spreads significantly, or he develops
-          chills — that upgrades to RED. Go to the ER.
+        Here's what's reassuring about your daughter's situation:
+        - No fever — this is the big one
+        - She doesn't look sick
+        - She can bear some weight
+        - X-ray was normal
 
-        Here's what's making your anxiety spike vs. what's actually
-        happening: the word "infection" is scary, but what we're
-        really talking about is catching something early that's very
-        treatable. You're doing the right thing by watching this closely.
+        There's a validated scoring system called the Kocher criteria...
+        your daughter likely has 0 or 1 of 4 criteria, which puts the
+        probability of septic arthritis at less than 3%.
+
+        ...
+
+        SHOULD YOU GO TO THE ER?
+
+        Go to the ER now if any of these happen:
+        - She develops a fever
+        - She stops being able to put any weight on the leg at all
+        - She starts looking sick — lethargic, inconsolable
+        - The pain gets significantly worse or isn't helped by ibuprofen
+
+        It's okay to wait and see your pediatrician in the morning if:
+        - No fever, resting comfortably, ibuprofen is helping
+        - She can still bear some weight and is acting like herself
+
+        ...
+
+        WHAT TO ASK AT THE ER (OR PEDIATRICIAN)
+
+        1. "Can we get a CBC, CRP, and ESR drawn?" — These blood tests
+           score the Kocher criteria. If all three are normal, septic
+           arthritis is essentially ruled out.
+        2. "Can we get an ultrasound of her right hip?" — checks for
+           fluid in the joint. No fluid = very reassuring.
+        3. "Based on her Kocher criteria score, what's her probability
+           of septic arthritis?" — tells the doctor you've done your
+           homework and want a real number.
+
+        ...
+
+        ABOUT THE SURGERY FEAR
+
+        I want to address this directly because I can tell it's weighing
+        on you. If — and this is a big "if" — she did turn out to have
+        septic arthritis: the surgery is a joint washout, not a joint
+        replacement. Kids bounce back remarkably fast. With early treatment,
+        full recovery is the expected outcome.
+
+        The fact that you went to urgent care today and are asking these
+        questions tonight means you're already ahead of the curve.
+
+        TONIGHT'S GAME PLAN
+
+        1. Give ibuprofen at the right dose for her weight
+        2. Check her temperature every 3-4 hours
+        3. Watch for the red flags listed above
+        4. Call your pediatrician first thing in the morning — or go to
+           the ER tonight if you want the answers now and won't sleep
+           otherwise
+        5. "Parent can't sleep" is a legitimate reason to go to the ER
+           when a child's health is in question
+
+        Is there anything else you're worried about that we haven't
+        covered?
 ```
 
-That's not a symptom checker. That's a doctor who listened, asked the right follow-up questions, gave a calibrated assessment with specific reasoning, and told you exactly what to do — including what would change the advice. That's hstack.
+That's not a symptom checker. That's a specialist who researched the specific condition, gave a calibrated assessment with real probabilities, told you exactly what to ask the doctor, addressed the fear you didn't fully say out loud, and gave you a concrete plan for tonight. That's hstack.
 
 ## Important
 

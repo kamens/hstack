@@ -67,9 +67,25 @@ hstack: [asks about recent illness, fever, when pain started, whether
 
         ASSESSMENT: PROBABLY NOT AN EMERGENCY — BUT GETTING LABS IS SMART
 
-        The most likely diagnosis is transient synovitis — the single
-        most common cause of acute hip pain in kids her age...
-        "Monitor for it" and "she probably has it" are very different.
+        The most likely diagnosis is transient synovitis — basically,
+        temporary inflammation of the hip joint. It's the single most
+        common cause of acute hip pain in kids your daughter's age. It
+        often follows a viral illness, causes exactly what you're
+        describing (hip-to-knee pain, limping, kid otherwise looks
+        fine), and it resolves on its own in about a week with rest
+        and ibuprofen.
+
+        The reason urgent care mentioned septic arthritis is because
+        it's the one thing they have to rule out — it's rare, but it's
+        a surgical emergency if missed. That's why getting labs is
+        smart — "monitor for it" and "she probably has it" are very
+        different things.
+
+        Here's what's reassuring about your daughter's situation:
+        - No fever — this is the big one
+        - She doesn't look sick
+        - She can bear some weight
+        - X-ray was normal
 
         Your daughter likely meets 0-1 of 4 Kocher criteria, which puts
         the probability of septic arthritis at less than 3%.

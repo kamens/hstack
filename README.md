@@ -24,7 +24,7 @@ Every time, I'm re-doing prompts from scratch. Re-explaining context. Re-buildin
 
 Open Claude Code and paste this. Claude does the rest.
 
-> Install hstack: run **`git clone https://github.com/kamens/hstack ~/hstack && cd ~/hstack && ./install.sh`**
+> Install hstack: run **`git clone https://github.com/kamens/hstack ~/.claude/skills/hstack && cd ~/.claude/skills/hstack && ./install.sh`**
 
 Start a new Claude Code session and the four `/health-*` commands are available immediately.
 

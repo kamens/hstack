@@ -23,16 +23,13 @@ Every time, I'm re-doing prompts from scratch. Re-explaining context. Re-buildin
 ## Install
 
 ```bash
-git clone https://github.com/kamens/hstack ~/.claude/skills/hstack
+git clone https://github.com/kamens/hstack ~/hstack
+cd ~/hstack && ./install.sh
 ```
 
-That's it. Claude Code auto-discovers skills in `~/.claude/skills/`. The four commands become available immediately.
+The install script symlinks each skill into `~/.claude/skills/`. Start a new Claude Code session and the four `/health-*` commands are available immediately.
 
-For development (working from a local checkout):
-
-```bash
-ln -s /path/to/your/hstack ~/.claude/skills/hstack
-```
+You can clone to any directory — `./install.sh` creates the symlinks regardless of where the repo lives.
 
 ## Your specialists
 

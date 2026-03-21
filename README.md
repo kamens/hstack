@@ -25,7 +25,7 @@ Think of it as having a battle-hardened ER doctor on speed dial — one who's se
 ## Install
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/hstack ~/.claude/skills/hstack
+git clone https://github.com/kamens/hstack ~/.claude/skills/hstack
 ```
 
 That's it. Claude Code auto-discovers skills in `~/.claude/skills/`. The four commands become available immediately.

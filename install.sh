@@ -10,14 +10,14 @@ SKILLS_DIR="$HOME/.claude/skills"
 mkdir -p "$SKILLS_DIR"
 
 SKILLS=(
-  health-prepare-for-visit
-  health-understand-results
-  health-summarize-research
-  health-discuss-case
-  health-wiki-init
-  health-wiki-ingest
-  health-wiki-refresh
-  health-wiki-lint
+  hstack-prepare-for-visit
+  hstack-understand-results
+  hstack-summarize-research
+  hstack-discuss-case
+  hstack-wiki-init
+  hstack-wiki-ingest
+  hstack-wiki-refresh
+  hstack-wiki-lint
 )
 
 for skill in "${SKILLS[@]}"; do
@@ -32,5 +32,5 @@ for skill in "${SKILLS[@]}"; do
 done
 
 echo ""
-echo "Done. ${#SKILLS[@]} health skills installed."
+echo "Done. ${#SKILLS[@]} hstack skills installed."
 echo "Start a new Claude Code session to use them."

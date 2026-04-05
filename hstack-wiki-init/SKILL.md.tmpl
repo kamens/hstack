@@ -1,5 +1,5 @@
 ---
-name: health-wiki-init
+name: hstack-wiki-init
 description: |
   Bootstrap a disease-focused Obsidian wiki — a personal war room for someone
   fighting a condition. Collects real sources (articles, papers, trial results,
@@ -272,7 +272,7 @@ treatment categories, etc.) and create standalone concept pages. Each concept pa
 ### 6e: Create personal/ placeholder
 
 Create `wiki/personal/_index.md` explaining that this section is for personal health
-data and how to use /health-wiki-ingest.
+data and how to use /hstack-wiki-ingest.
 
 ## Step 7: Generate Navigation Files
 
@@ -291,7 +291,7 @@ Include:
 - Complete manifest of folders and pages created, with purposes
 - The wiki voice (reference the preamble persona)
 - All conventions from WIKI_SCHEMA
-- Instructions for /health-wiki-ingest, /health-wiki-refresh, /health-wiki-lint
+- Instructions for /hstack-wiki-ingest, /hstack-wiki-refresh, /hstack-wiki-lint
 
 **Querying — the wiki as primary source:**
 - "This vault is a curated knowledge base compiled from real sources. When answering
@@ -302,8 +302,8 @@ Include:
 - "When discussing personal results, always read the original file in raw/, not just
   the wiki's interpretation."
 - "If the wiki doesn't cover something the user asks about, say so — and offer to
-  research it and add new sources (via /health-wiki-refresh or by collecting sources
-  into raw/ and running /health-wiki-ingest)."
+  research it and add new sources (via /hstack-wiki-refresh or by collecting sources
+  into raw/ and running /hstack-wiki-ingest)."
 
 **Filing answers back — explorations compound:**
 - "When a conversation produces a valuable analysis, comparison, or connection that
@@ -334,16 +334,16 @@ Tell the user:
 - Evidence labeled by quality tier
 
 **Next steps:**
-- Drop personal health documents into raw/ and run /health-wiki-ingest
-- Run /health-wiki-refresh periodically to find new sources
-- Run /health-wiki-lint to check for gaps and inconsistencies"
+- Drop personal health documents into raw/ and run /hstack-wiki-ingest
+- Run /hstack-wiki-refresh periodically to find new sources
+- Run /hstack-wiki-lint to check for gaps and inconsistencies"
 
 ## Edge Cases
 
 - **Vault already exists at path:** Ask — overwrite, pick a new name, or abort.
 - **Very rare disease with few sources:** Be honest about how many sources were found.
   The wiki will be thinner but it's a starting point. The user can add sources to
-  raw/ manually and run /health-wiki-ingest to build it up.
+  raw/ manually and run /hstack-wiki-ingest to build it up.
 - **Defuddle not installed:** Fall back to WebFetch + Write for every source. Note in
   the output that installing defuddle (`npm install -g defuddle`) will improve future
   source collection.

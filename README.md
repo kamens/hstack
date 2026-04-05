@@ -14,9 +14,9 @@ Inspired by the unreasonable effectiveness of [Garry Tan's gstack](https://githu
 ## Quick start
 
 1. Install hstack (30 seconds — see below)
-2. Run `/health-discuss-case` — describe something you're worried about. See how it responds.
-3. Run `/health-understand-results` — paste some test results or a diagnosis you've received.
-4. Run `/health-prepare-for-visit` — tell it about an upcoming appointment and watch it build your agenda.
+2. Run `/hstack-discuss-case` — describe something you're worried about. See how it responds.
+3. Run `/hstack-understand-results` — paste some test results or a diagnosis you've received.
+4. Run `/hstack-prepare-for-visit` — tell it about an upcoming appointment and watch it build your agenda.
 
 ## Install
 
@@ -24,7 +24,7 @@ Open Claude Code and paste this. Claude does the rest.
 
 > Install hstack: run **`git clone https://github.com/kamens/hstack ~/.claude/skills/hstack && cd ~/.claude/skills/hstack && ./install.sh`**
 
-Start a new Claude Code session and the four `/health-*` commands are available immediately.
+Start a new Claude Code session and the `/hstack-*` commands are available immediately.
 
 Or run it yourself in a terminal — same command, same result.
 
@@ -34,19 +34,19 @@ Four agent specialists, each with a specific role. They all share the same found
 
 | Skill | Your specialist | What they do |
 |-------|----------------|--------------|
-| `/health-prepare-for-visit` | **Patient Advocate** | Builds your appointment agenda — prioritized questions to ask, things to bring, what to expect, medical terms you'll hear, and red flags to listen for. You'll walk in more prepared than most patients. |
-| `/health-understand-results` | **Results Interpreter** | Breaks down test results and diagnoses — what the numbers actually mean, what's normal vs. notable, likely next steps, and what NOT to Google at 2am. Separates the signal from the noise. |
-| `/health-summarize-research` | **Latest R&D Scout** | Synthesizes the cutting edge of medical research — what's proven and available now, what's in clinical trials, what's early-stage, and what's hype. Brings back actionable intelligence for your next doctor conversation. |
-| `/health-discuss-case` | **ER Doc on Call** | The 3am tool. Something is happening and you need to know: is this normal, or do I need to act? Gives a clear red/yellow/green assessment — and knows when "you're okay" is the right answer. |
+| `/hstack-prepare-for-visit` | **Patient Advocate** | Builds your appointment agenda — prioritized questions to ask, things to bring, what to expect, medical terms you'll hear, and red flags to listen for. You'll walk in more prepared than most patients. |
+| `/hstack-understand-results` | **Results Interpreter** | Breaks down test results and diagnoses — what the numbers actually mean, what's normal vs. notable, likely next steps, and what NOT to Google at 2am. Separates the signal from the noise. |
+| `/hstack-summarize-research` | **Latest R&D Scout** | Synthesizes the cutting edge of medical research — what's proven and available now, what's in clinical trials, what's early-stage, and what's hype. Brings back actionable intelligence for your next doctor conversation. |
+| `/hstack-discuss-case` | **ER Doc on Call** | The 3am tool. Something is happening and you need to know: is this normal, or do I need to act? Gives a clear red/yellow/green assessment — and knows when "you're okay" is the right answer. |
 
 Each specialist consults behind-the-scenes clinical subagents (a triage specialist, a lab interpreter, a research analyst, a medical information specialist), then delivers the findings with appropriate warmth.
 
 ## See it work
 
-Real example using `/health-prepare-for-visit`:
+Real example using `/hstack-prepare-for-visit`:
 
 ```
-You:    /health-prepare-for-visit
+You:    /hstack-prepare-for-visit
         8 year old daughter has intense leg pain from hip to knee.
         Struggled to walk but otherwise doesn't look sick. Urgent care
         took xray and flu/covid tests — nothing came up. Told us to
@@ -180,17 +180,17 @@ bun test
 
 Adding a new specialist takes about 10 minutes:
 
-1. Create a directory with a `health-` prefix:
+1. Create a directory with an `hstack-` prefix:
 
 ```bash
-mkdir health-your-skill-name
+mkdir hstack-your-skill-name
 ```
 
 2. Create `SKILL.md.tmpl` with this structure:
 
 ```yaml
 ---
-name: health-your-skill-name
+name: hstack-your-skill-name
 description: |
   What this skill does and when to use it.
 ---
@@ -216,7 +216,7 @@ bun run gen:skill-docs
 bun test test/skill-validation.test.ts
 ```
 
-4. Try it in Claude Code — the skill appears as `/health-your-skill-name`.
+4. Try it in Claude Code — the skill appears as `/hstack-your-skill-name`.
 
 5. Add an LLM eval test case in `test/skill-llm-eval.test.ts` with a focus area description for the judge.
 

@@ -1,5 +1,5 @@
 ---
-name: health-wiki-lint
+name: hstack-wiki-lint
 description: |
   Health-check a disease wiki for structural issues and content quality. Finds
   broken wikilinks, missing _index.md files, orphan pages, shallow hierarchies,
@@ -59,7 +59,7 @@ but have no standalone concept page. Create them.
 
 **Uneven coverage:** Sections with many sources and dense pages alongside
 sections with a single thin page. Flag thin sections and suggest running
-/health-wiki-refresh focused on those topics.
+/hstack-wiki-refresh focused on those topics.
 
 ## Step 4: Content Checks (Report Only)
 
@@ -68,7 +68,7 @@ suggest which is likely more current.
 
 **Stale claims:** Information with dates suggesting it should be re-verified
 (e.g., "results expected 2025" when it's 2026). Report and suggest a focused
-/health-wiki-refresh.
+/hstack-wiki-refresh.
 
 **Unsourced claims:** Wiki content that doesn't trace to any raw/ source.
 Flag — these may be LLM synthesis from init that should be grounded with
@@ -105,7 +105,7 @@ Report directly to the user (lint reports are ephemeral, not wiki pages):
 [content that needs raw/ sources to ground it]
 
 ### Thin Sections
-[sections that need more sources — suggest /health-wiki-refresh]
+[sections that need more sources — suggest /hstack-wiki-refresh]
 
 ## Wiki Health
 - Total pages: [N]

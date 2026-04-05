@@ -1,11 +1,11 @@
 ---
-name: health-wiki-lint
+name: hstack-wiki-refresh
 description: |
-  Health-check a disease wiki for structural issues and content quality. Finds
-  broken wikilinks, missing _index.md files, orphan pages, shallow hierarchies,
-  missing concept pages, stale content, and contradictions. Auto-fixes structural
-  problems, flags content issues for the user. Use periodically to keep the wiki
-  clean and internally consistent.
+  Re-research the state of the art for a disease wiki by collecting new sources
+  and updating the compiled wiki. Searches for new trial results, approvals,
+  guideline changes, community discoveries. Can run broad (refresh everything)
+  or focused (e.g., "refresh with the latest GLP-1 data"). Use periodically
+  to keep a wiki current.
 ---
 <!-- AUTO-GENERATED from SKILL.md.tmpl — do not edit directly -->
 <!-- Regenerate: bun run gen:skill-docs -->
@@ -322,7 +322,7 @@ primary source when answering questions — not training data. The wiki was comp
 from real, curated sources. When a user asks a question, Claude should read the index,
 navigate to relevant pages, and ground its answer in the wiki's content. If the wiki
 doesn't cover something, Claude should say so and offer to research it (adding new
-sources via /health-wiki-refresh or /health-wiki-ingest).
+sources via /hstack-wiki-refresh or /hstack-wiki-ingest).
 
 When a conversation produces a valuable analysis or connection that doesn't exist in
 the wiki yet, Claude should offer to file it as a new wiki page. The user's
@@ -524,107 +524,136 @@ Reviewed in [[Meeting Notes 2024-01-10#Decisions]].
 - [Callouts](https://help.obsidian.md/callouts)
 - [Properties](https://help.obsidian.md/properties)
 
-# Lint the Wiki
+<!-- Fetched from https://raw.githubusercontent.com/kepano/obsidian-skills/main/skills/defuddle/SKILL.md -->
+<!-- Do not edit — regenerate with: bun run gen:skill-docs -->
 
-**You are the quality inspector.** A wiki is only useful if it's consistent,
-navigable, and trustworthy. Read the entire vault, find structural problems and
-content issues, fix what you can, and flag what needs human judgment.
+# Defuddle
 
-Karpathy calls this "health checks" — finding inconsistent data, missing
-cross-references, data gaps, and incrementally improving the wiki's integrity.
+Use Defuddle CLI to extract clean readable content from web pages. Prefer over WebFetch for standard web pages — it removes navigation, ads, and clutter, reducing token usage.
+
+If not installed: `npm install -g defuddle`
+
+## Usage
+
+Always use `--md` for markdown output:
+
+```bash
+defuddle parse <url> --md
+```
+
+Save to file:
+
+```bash
+defuddle parse <url> --md -o content.md
+```
+
+Extract specific metadata:
+
+```bash
+defuddle parse <url> -p title
+defuddle parse <url> -p description
+defuddle parse <url> -p domain
+```
+
+## Output formats
+
+| Flag | Format |
+|------|--------|
+| `--md` | Markdown (default choice) |
+| `--json` | JSON with both HTML and markdown |
+| (none) | HTML |
+| `-p <name>` | Specific metadata property |
+
+# Refresh the Wiki
+
+**You are the researcher returning with new sources.** The wiki was compiled from
+sources collected at some point in the past. Your job is to go find new sources —
+new trial results, new approvals, new guidelines, new community threads — save
+them to raw/, and then update the wiki by compiling the new material in.
+
+This follows the same source-first pattern as init: **collect first, compile second.**
+The difference is you're adding to an existing wiki, not building from scratch.
+
+Two modes:
+- **Broad refresh:** Search across the full landscape, collect new sources, update everything
+- **Focused refresh:** The user has a specific topic (e.g., "latest GLP-1 data") — deep-dive that
+
+Detect which mode from the user's input.
 
 ## Step 1: Read the Vault
 
-Read CLAUDE.md, index.md, log.md. Then read _index.md files at each level to
-understand the structure. Read wiki pages — prioritize recently-updated pages
-and pages with the most cross-references.
+Read CLAUDE.md, index.md, log.md. Understand the current structure and when the
+wiki was last updated (from log.md dates).
 
-## Step 2: Structural Checks (Auto-Fix)
+## Step 2: Determine Scope
 
-**Missing _index.md files:** Every folder in wiki/ must have one. If missing,
-create it by summarizing the folder's contents.
+**Broad:** Skim key _index.md files and overview pages to understand current coverage.
+Tell the user: "Wiki last updated [DATE]. I'll search for new sources across all
+domains."
 
-**Broken wikilinks:** Links pointing to pages that don't exist. Fix by creating
-a stub page or correcting the link.
+**Focused:** Identify which section the topic maps to. Read those pages to understand
+what's currently there. Tell the user: "I'll deep-dive [TOPIC] and find new sources."
 
-**Orphan pages:** Pages with no inbound wikilinks. Add them to the parent
-_index.md and link from relevant pages.
+**URL provided:** If the user says "refresh with this article: [URL]", save it to
+raw/ using defuddle, then compile it into the wiki. This bridges refresh and ingest.
 
-**Index staleness:** Pages that exist but aren't in index.md. Add them.
+## Step 3: Collect New Sources
 
-**Missing frontmatter:** Pages without title, tags, sources, or last_updated.
-Add sensible defaults.
+### Broad refresh — dispatch 5 subagents in parallel
 
-**Missing source provenance:** Personal data pages that don't link back to
-their raw/ source file. Add the provenance link.
+Each subagent searches for sources published since the last update and saves them
+to raw/ using defuddle. Same 5 domains as init (clinical, treatments, lifestyle,
+technology, community) but focused on **what's new since [LAST_UPDATE_DATE]**.
 
-## Step 3: Organization Checks (Auto-Fix with Reporting)
+Each subagent prompt should include:
+- The disease name
+- The last update date
+- Instructions to use `defuddle parse '<url>' --md -o raw/<name>.md` to save sources
+- Instructions to search with date-qualified queries ('[CONDITION] [CURRENT_YEAR]')
+- "If nothing significant is new in your domain, say so — don't save low-value sources"
 
-**Shallow hierarchies:** Folders with 8+ pages and no subfolders — these
-probably need to be split into subtopics. Propose (and implement if clear)
-a sub-hierarchy based on content clustering.
+Target: 3-5 new sources per subagent for broad refresh, more for focused.
 
-**Missing concept pages:** Identify terms or concepts that appear in 3+ pages
-but have no standalone concept page. Create them.
+### Focused refresh — dispatch 1-2 targeted subagents
 
-**Uneven coverage:** Sections with many sources and dense pages alongside
-sections with a single thin page. Flag thin sections and suggest running
-/health-wiki-refresh focused on those topics.
+Deep-dive the specific topic. Search aggressively, save the best sources to raw/.
 
-## Step 4: Content Checks (Report Only)
+Also dispatch the community source collector to search for community discussion
+of the same topic.
 
-**Contradictions:** Page A says X, page B says Y. Report both with links and
-suggest which is likely more current.
+## Step 4: Compile Updates
 
-**Stale claims:** Information with dates suggesting it should be re-verified
-(e.g., "results expected 2025" when it's 2026). Report and suggest a focused
-/health-wiki-refresh.
+Read the newly collected raw/ sources and update the wiki:
 
-**Unsourced claims:** Wiki content that doesn't trace to any raw/ source.
-Flag — these may be LLM synthesis from init that should be grounded with
-real sources.
+- **Update existing pages** with new information from new sources. Add an update callout:
+  ```markdown
+  > [!tip] Updated [DATE]
+  > [What's new — e.g., "Phase 3 results published. See [[raw/source.md]]"]
+  ```
+- **Create new pages** if new sources cover topics not yet in the wiki. Add to the
+  appropriate folder, create _index.md if new folder.
+- **Create new concept pages** if new concepts emerged from the sources.
+- **Mark superseded information:**
+  ```markdown
+  > [!caution] Updated [DATE]
+  > Previous guidance was [X]. Updated data shows [Y]. See [[raw/source.md]].
+  ```
 
-**Missing evidence tiers:** Major claims without an evidence tier callout.
-Flag with a suggested tier.
+## Step 5: Update Navigation
 
-**Personal-research disconnects:** Personal health data that relates to
-research pages but isn't cross-referenced.
+- Update `_index.md` in every modified folder
+- Update root `index.md`
+- Update `CLAUDE.md` structural manifest if structure changed
+- Append to `log.md`
 
-## Step 5: Report
+## Step 6: Summary
 
-Report directly to the user (lint reports are ephemeral, not wiki pages):
+Report what was found, what was collected, what was updated, and what's unchanged.
+For the most important new development, briefly explain why it matters.
 
-```
-# Lint Report — [DATE]
+## Edge Cases
 
-## Auto-Fixed ([N] issues)
-- Created _index.md in [folder]
-- Fixed [N] broken wikilinks
-- Created concept pages: [[concepts/term1]], [[concepts/term2]]
-- Split [folder] into [N] subfolders
-
-## Needs Attention ([N] issues)
-
-### Contradictions
-[specific contradictions with page links]
-
-### Stale Content
-[specific stale claims with suggestions]
-
-### Unsourced Claims
-[content that needs raw/ sources to ground it]
-
-### Thin Sections
-[sections that need more sources — suggest /health-wiki-refresh]
-
-## Wiki Health
-- Total pages: [N]
-- Source files in raw/: [N]
-- Concept pages: [N]
-- Folders with _index.md: [N]/[N]
-- Issues: [N] auto-fixed, [N] flagged
-```
-
-## Step 6: Update log.md
-
-Append a lint entry summarizing what was found and fixed.
+- **Very recent vault:** Sources may be the same. Run the search anyway but set
+  expectations.
+- **Focused topic not in wiki:** Create the section. This is how the wiki grows.
+- **Nothing new found:** Report it. The wiki is current. That's valuable information.

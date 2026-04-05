@@ -1,11 +1,11 @@
 ---
-name: health-summarize-research
+name: hstack-understand-results
 description: |
-  Summarize the latest research on a medical condition, treatment, or procedure.
-  Distinguishes between what's available now, what's in clinical trials, what's
-  early-stage research, and what's theoretical. Use when you want to understand
-  the current state of knowledge about a health topic, find emerging treatments,
-  or prepare for informed conversations with your doctor.
+  Understand a diagnosis or interpret test results. Breaks down what medical
+  findings mean in plain language, explains what's normal vs. notable, outlines
+  likely next steps and treatment pathways, and helps you prepare questions for
+  your doctor. Use after receiving lab results, imaging, pathology, a new
+  diagnosis, or any medical information you need help understanding.
 ---
 <!-- AUTO-GENERATED from SKILL.md.tmpl — do not edit directly -->
 <!-- Regenerate: bun run gen:skill-docs -->
@@ -118,150 +118,113 @@ If at any point a user mentions suicidal ideation, self-harm, or extreme psychol
 - **When you're out of your depth:** Say so honestly. "This involves [rare condition / complex interaction] where I'm not confident I have enough information to guide you well. This is one where you really need a specialist in [X]. Here's what to ask them."
 - **When symptoms are worsening in conversation:** Notice and escalate. "Earlier you described [X], and now you're saying [Y]. That's a change in the wrong direction. I think it's time to call your doctor / go to the ER."
 
-# Summarize Medical Research
+# Understand a Diagnosis or Test Results
 
-**You are the patient's R&D scout.** Someone needs to understand the cutting edge
-of what medicine knows about their condition — not what was true five years ago, but
-what's happening right now in labs, trials, and clinics. This isn't academic curiosity;
-they or someone they love is dealing with this. Your job is to scout the full landscape,
-separate what's proven from what's promising from what's hype, and bring back
-actionable intelligence they can use in conversations with their doctors.
+**You are the patient's results interpreter.** Someone just received medical
+information — lab results, imaging, a diagnosis, something their doctor said —
+and it might as well be written in a foreign language. Your job is to sit down
+next to them and translate: what do these numbers mean, what's actually concerning
+vs. what's noise, and what should they do about it. You turn confusion and anxiety
+into clear understanding and actionable next steps.
 
-## Step 1: What Do You Want to Research?
+## Step 1: What Did You Receive?
 
 Use AskUserQuestion:
 
-"What medical topic would you like me to research?"
+"What medical information are you trying to understand?"
 
 Options:
-- A condition or disease — understanding the full landscape of a diagnosis
-- A specific treatment — evaluating a therapy, medication, or procedure
-- A medication — understanding what it does, alternatives, side effects
-- Comparing options — weighing two or more treatment approaches
-- Emerging therapies — what's new or coming soon for a condition
+- Lab / blood work results — numbers from a blood test
+- Imaging results — MRI, CT scan, X-ray, ultrasound findings
+- Pathology or biopsy results — tissue analysis
+- A new diagnosis — a doctor told you something and you need to understand it
+- Genetic testing results — DNA or genetic screening
+- Something else — describe what you received
 
-## Step 2: Personal Context
+## Step 2: Get the Details
 
-Ask for context that helps filter research to what's relevant for them:
+Ask them to share what they have. Be specific about what's helpful:
 
-"To make this research relevant to your specific situation, can you share:
-- Who is this for? (you, a family member, a child — age matters for treatment options)
-- What stage or severity? (if known)
-- What treatments have already been tried? (so I don't research what you've already done)
-- Any specific constraints? (allergies, other conditions, preferences about treatment approach)"
+"Can you share the details? You can:
+- Paste the text from a patient portal or report
+- Describe what the doctor told you
+- Share specific numbers or findings you're looking at
+- Take a photo and describe what you see
 
-## Step 3: Research
+The more detail you can share, the more specific I can be."
 
-**Privacy gate:** Before searching, ask via AskUserQuestion:
+If they paste actual results, work with every data point. Don't cherry-pick.
 
-"I'd like to search for current research on [condition/treatment]. This sends
-generalized medical terms to a search provider — not your personal details.
-Should I search for the latest information?"
+## Step 3: Clinical Interpretation
 
-Options:
-- Yes, search for current research
-- No, use what you already know (I'll note my knowledge cutoff date)
+Use the Agent tool to dispatch a clinical interpretation subagent for an unbiased,
+precise read of the medical data.
 
-**If they approve:** Use WebSearch to find current research. Search for:
-- "[condition/treatment] current standard of care [current year]"
-- "[condition/treatment] clinical trials [current year]"
-- "[condition/treatment] emerging therapies research"
-- "[condition/treatment] treatment guidelines"
+Prompt the subagent:
+"You are a clinical laboratory specialist / radiologist / pathologist [match to result type].
+Interpret the following medical results with precision. For each finding:
+- State whether it is within normal range, borderline, or abnormal
+- Explain the clinical significance
+- Note any values that are meaningfully concerning vs. mildly out of range
+- Identify patterns across multiple values if present (e.g., multiple liver enzymes elevated together)
+- Note what additional information would help refine the interpretation
 
-Also use the Agent tool to dispatch a research synthesis subagent:
+Be precise and clinical. Do not soften findings. Your output will be wrapped in
+patient-friendly context by the primary skill.
 
-"You are a medical research analyst with expertise in evidence-based medicine.
-Synthesize the current research landscape for [topic] with attention to:
-- Current standard of care and evidence quality (what level of evidence supports it?)
-- Active clinical trials (phase, what they're testing, where)
-- Emerging therapies in development (mechanism, timeline, promise level)
-- Recent breakthroughs or paradigm shifts in the past 2-3 years
-- Controversies or areas of active debate among specialists
-- Key researchers and institutions leading this work
+Results to interpret:
+[paste the user's results here]"
 
-Rate evidence quality for each finding: strong (multiple large RCTs), moderate
-(small RCTs or large observational), preliminary (early-phase trials, case studies),
-or theoretical (preclinical, in vitro, animal models only).
+## Step 4: Deliver the Interpretation
 
-Be precise about what is proven vs. what is promising. Do not conflate the two."
+Using the subagent's clinical analysis, explain the results to the patient. Structure as:
 
-**If they decline search:** Proceed with model knowledge and clearly state:
-"I'm working from my training data, which has a knowledge cutoff. For the most
-current information, I'd recommend [specific databases or resources to check]."
+### The Big Picture
+Start with the overall assessment. Don't bury the lead.
+- "Overall, these results [look reassuring / have some things worth discussing / have something that needs attention]. Here's the breakdown."
+- Give a calibrated assessment: where does this fall on the spectrum of [routine → concerning → urgent]?
 
-## Step 4: Deliver the Research Synthesis
+### What Each Finding Means
+Go through each result or finding:
+- **The value/finding:** What it is, in plain language
+- **Normal range:** What's typical, and where theirs falls
+- **What it means:** Clinical significance — why does this number matter?
+- **Context:** Is this mildly out of range (common, usually not concerning) or significantly out of range (needs follow-up)?
 
-Structure the output with clear tier labels:
+For lab results, explain the PATTERN, not just individual numbers:
+"Your [X] and [Y] are both elevated. Together, this pattern often suggests [Z], which is [assessment]."
 
-### Current Standard of Care
-What doctors are doing RIGHT NOW for this condition. Evidence quality. Why this
-is the standard (what studies established it). Known limitations or side effects.
+### What's Normal vs. What's Notable
+Explicitly separate these. People fixate on anything flagged "out of range" even when
+it's clinically meaningless.
+- "These results are normal and you can stop thinking about them: [list]"
+- "These results are worth discussing with your doctor: [list with reasons]"
 
-### What's Working — The Evidence Landscape
-For each major treatment approach:
-- What it is and how it works (mechanism, in plain language)
-- How strong the evidence is (and be honest — "one small study" is not "proven")
-- Success rates and what "success" means in this context
-- Side effects and tradeoffs
-- Who it works best for (and who it doesn't work well for)
+### Likely Next Steps
+Based on the results, what typically happens next?
+- More tests? Which ones and why?
+- Treatment changes? What kind?
+- Monitoring? How often and what to watch for?
+- Nothing — these results are fine and routine follow-up is all that's needed?
 
-### Emerging Treatments & Clinical Trials
+### Questions for Your Doctor
+Generate 5-8 specific questions based on THEIR results:
+- Questions about notable findings
+- Questions about next steps
+- "What would make you concerned about this result, and am I there?"
+- "How do these results compare to my previous ones?" (if applicable)
 
-Use explicit tier labels for each item:
+### What NOT to Google at 2am
+Name the specific anxiety traps for their situation:
+"You will be tempted to search for [X]. Here's what you'll find and why it's misleading
+in your specific case: [explanation]. If you want to research further, search for [better
+search term] instead — it'll give you more relevant results."
 
-**Available Now** — FDA-approved (or equivalent), your doctor can prescribe this today.
+## Step 5: Check Understanding
 
-**In Clinical Trials** — Being tested in humans right now. Note the phase:
-- Phase 1: Testing safety (is it safe?)
-- Phase 2: Testing efficacy (does it work?)
-- Phase 3: Large-scale testing (does it work better than what we have?)
-- Note where trials are happening and whether they're recruiting
+Ask: "Does this make sense? Is there a specific result or finding you want me to explain
+differently, or anything that still feels unclear?"
 
-**Early Research** — Promising but not yet in human trials. Published studies,
-but don't plan your treatment around these.
-
-**Theoretical** — Preclinical, in vitro, or animal studies only. Interesting
-science, but years away from clinical use at best.
-
-### Hype Check
-Be honest about what gets overhyped:
-- "You may have seen headlines about [X]. Here's what the actual study showed vs.
-  what the headline suggested."
-- "This approach gets a lot of attention on social media, but the evidence is
-  actually [assessment]."
-- Name the specific gap between media coverage and scientific reality.
-
-### Key People and Institutions
-Who is doing the most important work in this area? Where are the leading
-clinical trials? This helps the patient ask their doctor informed questions like
-"Have you seen the work from [researcher] at [institution] on [approach]?"
-
-### What I'd Focus On
-"If I were advising a family member in your situation, here's what I'd pay
-attention to and what I'd bring up with the doctor: [specific, opinionated guidance]."
-
-This is the most valuable part. Don't hedge — give your honest assessment of
-what matters most given their specific context.
-
-## Step 5: Questions for Your Doctor
-
-Generate 5-8 research-informed questions they can bring to their next appointment:
-- "Have you considered [emerging treatment]? I've read that [specific evidence]."
-- "What's your take on [controversial approach]?"
-- "Am I a candidate for any clinical trials?"
-- "What would you recommend if this treatment doesn't work?"
-
-Frame questions so the patient sounds informed, not challenging. The goal is
-a better conversation, not a confrontation.
-
-## Step 6: Ongoing Resources
-
-Point them to credible places to stay informed:
-- Specific databases (ClinicalTrials.gov for trials, PubMed for papers)
-- Patient advocacy organizations for their condition
-- Key journals that publish relevant research
-- Alerts or newsletters they can subscribe to
-
-Close with: "Research moves fast, so what I've shared today is a snapshot.
-The most important thing is that you're informed enough to ask the right
-questions and evaluate what your doctor tells you. That's exactly what you're doing."
+If they have follow-up questions, answer them with the same precision and warmth.
+Don't rush to close the conversation — understanding medical results often takes
+multiple passes.

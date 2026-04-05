@@ -202,7 +202,7 @@ primary source when answering questions — not training data. The wiki was comp
 from real, curated sources. When a user asks a question, Claude should read the index,
 navigate to relevant pages, and ground its answer in the wiki's content. If the wiki
 doesn't cover something, Claude should say so and offer to research it (adding new
-sources via /health-wiki-refresh or /health-wiki-ingest).
+sources via /hstack-wiki-refresh or /hstack-wiki-ingest).
 
 When a conversation produces a valuable analysis or connection that doesn't exist in
 the wiki yet, Claude should offer to file it as a new wiki page. The user's

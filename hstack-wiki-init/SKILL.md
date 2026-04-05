@@ -1,11 +1,12 @@
 ---
-name: health-wiki-ingest
+name: hstack-wiki-init
 description: |
-  Process new files dropped into a disease wiki's raw/ folder — personal health
-  data (lab results, doctor's notes, imaging), research articles, or any other
-  source material. Reads each file, creates or updates wiki pages compiled from
-  those sources, creates concept pages where needed, updates _index.md files and
-  navigation. Use after dropping files into raw/ in an existing wiki vault.
+  Bootstrap a disease-focused Obsidian wiki — a personal war room for someone
+  fighting a condition. Collects real sources (articles, papers, trial results,
+  community threads) into raw/, then compiles them into an organized, interlinked
+  Obsidian vault following Karpathy's LLM Wiki pattern. Use when someone is
+  newly diagnosed, or when you want a comprehensive, navigable knowledge base
+  for any health condition.
 ---
 <!-- AUTO-GENERATED from SKILL.md.tmpl — do not edit directly -->
 <!-- Regenerate: bun run gen:skill-docs -->
@@ -322,7 +323,7 @@ primary source when answering questions — not training data. The wiki was comp
 from real, curated sources. When a user asks a question, Claude should read the index,
 navigate to relevant pages, and ground its answer in the wiki's content. If the wiki
 doesn't cover something, Claude should say so and offer to research it (adding new
-sources via /health-wiki-refresh or /health-wiki-ingest).
+sources via /hstack-wiki-refresh or /hstack-wiki-ingest).
 
 When a conversation produces a valuable analysis or connection that doesn't exist in
 the wiki yet, Claude should offer to file it as a new wiki page. The user's
@@ -564,110 +565,335 @@ defuddle parse <url> -p domain
 | (none) | HTML |
 | `-p <name>` | Specific metadata property |
 
-# Ingest Raw Sources into the Wiki
+# Initialize a Disease Wiki
 
-**You are the librarian.** Someone has dropped new files into raw/. Your job is to
-read each file, figure out what it is, compile it into wiki pages that fit the
-existing organization, create concept pages for new terms, update _index.md files
-at every affected level, and keep the navigation current. The wiki grows organically
-from what's added.
+**You are the architect of a patient's war room.** Someone — or someone they love —
+is dealing with a disease. You're going to build them a comprehensive, navigable
+knowledge base compiled from real sources: research papers, clinical trial results,
+treatment guidelines, press releases, patient community threads, and more.
 
-Two categories of raw material, handled differently:
+This is a two-phase process following Karpathy's LLM Wiki pattern:
+1. **Collect:** Search the web extensively, find the best sources, save them to raw/
+2. **Compile:** Read all collected sources, organize into an interlinked Obsidian wiki
 
-- **Personal health data** (lab results, imaging, doctor's notes) — interpreted
-  clinically and compiled into wiki/personal/. The raw file is always linked as the
-  source of truth.
-- **Research and reference material** (articles, papers, community threads) — compiled
-  into the appropriate wiki/ section. May create new pages, new subfolders, or update
-  existing pages.
+The wiki is only as good as the sources it's compiled from. Phase 1 is where the
+depth comes from. Don't rush it.
 
-## Step 1: Find the Vault
+## Step 1: What Condition?
 
-Read CLAUDE.md to understand the disease, the current structure (the structural
-manifest), and the conventions. Read index.md for the full page map. Read log.md
-for previously-processed files.
+Use AskUserQuestion:
 
-If no vault found: "I don't see a wiki vault here. Run /health-wiki-init first."
+"What condition or disease should this wiki cover?"
 
-## Step 2: Scan for Unprocessed Files
+## Step 2: Who Is This For?
 
-Read log.md, extract all filenames from previous ingest entries. Scan raw/
-recursively. The difference is the work queue.
+Use AskUserQuestion:
 
-If no new files: "All files in raw/ have already been processed."
+"Who is this for — yourself, your child, a parent, a partner? And what do you already
+know about the situation?"
 
-List what was found: "I found [N] new file(s) in raw/: [list]. I'll process each now."
+## Step 3: Choose Location
 
-## Step 3: Read and Classify Each File
+Use AskUserQuestion:
 
-For each unprocessed file:
-1. Read it using the Read tool (works for markdown, text, PDFs, images).
-2. Classify: lab results, imaging, doctor's notes, research article, community
-   content, or other.
-3. If ambiguous, ask the user via AskUserQuestion.
+"Where should I create the wiki vault?
 
-## Step 4: Compile into Wiki Pages
+Default: `~/[condition-name]-wiki/`"
 
-### For personal health data
+## Step 4: Scaffold the Vault
 
-Dispatch an Agent subagent for clinical interpretation:
+Create the minimal directory structure:
 
-"You are a clinical specialist interpreting a patient document for a [CONDITION] wiki.
-The patient is [WHO — from CLAUDE.md context].
-
-Read and interpret this document:
-[Include full content]
-
-Provide: what type of document this is, findings with values and normal ranges,
-clinical significance, how findings relate to [CONDITION], what's reassuring and
-what warrants attention.
-
-Be precise. Do not soften findings."
-
-Then compile the interpretation into wiki/personal/ pages. Every page MUST link
-back to the raw source:
-
-```markdown
-> **Source:** [[raw/filename.pdf]]
-> _For the original unedited data, open the source directly._
+```
+[vault-path]/
+├── raw/
+├── wiki/
+│   └── personal/
+├── index.md          (placeholder)
+└── log.md            (placeholder)
 ```
 
-Update or create timeline, trends, and visit pages as appropriate. The organization
-within personal/ is emergent — let the data shape it.
+No other wiki/ subfolders yet — those emerge from the sources in Phase 2.
 
-### For research and reference material
+## Step 5: Collect Sources (Phase 1)
 
-Read the source and determine where it fits in the existing wiki structure:
+This is the most important step. Dispatch 5 Agent subagents **simultaneously** to
+search the web and collect real sources into raw/. Each subagent uses WebSearch to
+find sources, then saves each valuable source to raw/ using defuddle:
 
-- **Fits an existing page:** Update that page with the new information. Add the raw
-  source to the page's frontmatter `sources:` list.
-- **New subtopic within an existing section:** Create a new page in the appropriate
-  folder. Update that folder's `_index.md`.
-- **New topic entirely:** Create a new folder if warranted, with its own `_index.md`.
-  Or add to the most relevant existing section.
+```bash
+defuddle parse "<url>" --md -o raw/<descriptive-name>.md
+```
 
-## Step 5: Concept Pages
+If defuddle is not available, use WebFetch and save with the Write tool.
 
-Check if the new content introduces concepts that appear across multiple pages but
-don't have standalone concept pages yet. If so, create them. If existing concept
-pages need updating with new information, update them.
+Each subagent should **keep searching until it stops finding valuable new material.**
+Search broadly, follow threads, go multiple searches deep, try different query angles.
 
-## Step 6: Update Navigation
+**Quality gate:** Only save a source if it contains substantial, specific information
+you haven't already covered in a previously-saved source. Skip generic overview pages
+that repeat common knowledge. Before saving, mentally check: does this add something
+the sources I've already collected don't have?
 
-- Update `_index.md` in every folder that was modified
-- Update root `index.md` with any new pages or sections
-- Append to `log.md` with details of what was processed and what was created/updated
-- Update `CLAUDE.md` structural manifest if new folders were created
+**When to stop:** If your last 3 searches didn't produce anything worth saving, you've
+exhausted this domain. Wrap up and report what you collected. Hard ceiling of 150
+sources per collector — but it's fine to stop well before this if the domain is
+exhausted.
 
-## Step 7: Summary
+**Subagent A — Clinical & Research Source Collector:**
 
-Tell the user what was done — files processed, pages created/updated, cross-references
-added. For personal health data, include a brief clinical summary of the key findings.
+"You are collecting the best current sources about [CONDITION] — research papers,
+review articles, clinical guidelines, and trial results. Use WebSearch to find them.
+For each valuable source, save it to raw/ using:
+
+```bash
+defuddle parse '<url>' --md -o raw/<descriptive-name>.md
+```
+
+If defuddle is not installed, use WebFetch to get the content and Write to save it.
+
+Search for:
+- '[CONDITION] review article [CURRENT_YEAR]'
+- '[CONDITION] clinical guidelines [CURRENT_YEAR]'
+- '[CONDITION] pathophysiology review'
+- '[CONDITION] clinical trial results [CURRENT_YEAR]'
+- '[CONDITION] [CURRENT_YEAR] site:pubmed.ncbi.nlm.nih.gov'
+- '[CONDITION] disease mechanism'
+- '[CONDITION] biomarkers'
+- '[CONDITION] prognosis'
+
+Keep searching until you stop finding valuable new material. Go multiple searches
+deep — follow references, try different query angles, check specific journals and
+institutions. Name files descriptively: raw/t1d-pathophysiology-review-2026.md, etc.
+
+Context: this is for [WHO]. [Any additional context from Step 2.]"
+
+**Subagent B — Treatment & Trials Source Collector:**
+
+"You are collecting the best current sources about treatments for [CONDITION]. Use
+WebSearch to find them. Save each to raw/ using defuddle (or WebFetch + Write):
+
+```bash
+defuddle parse '<url>' --md -o raw/<descriptive-name>.md
+```
+
+Search for:
+- '[CONDITION] treatment guidelines [CURRENT_YEAR]'
+- '[CONDITION] new drug approval [CURRENT_YEAR]'
+- '[CONDITION] clinical trials recruiting'
+- '[CONDITION] standard of care'
+- '[CONDITION] emerging treatments'
+- '[CONDITION] off-label treatments evidence'
+- '[CONDITION] comparative effectiveness'
+- '[CONDITION] treatment site:nejm.org OR site:thelancet.com'
+
+Keep searching until you stop finding valuable new material. Guideline documents,
+landmark trial results, treatment comparisons, new drug approvals, head-to-head
+studies — get all the important ones, not just the first page of results.
+
+Context: this is for [WHO]. [Any additional context from Step 2.]"
+
+**Subagent C — Lifestyle & Integrative Source Collector:**
+
+"You are collecting the best current sources about lifestyle interventions for
+[CONDITION]. Use WebSearch, save to raw/ using defuddle (or WebFetch + Write):
+
+```bash
+defuddle parse '<url>' --md -o raw/<descriptive-name>.md
+```
+
+Search for:
+- '[CONDITION] nutrition evidence [CURRENT_YEAR]'
+- '[CONDITION] exercise study'
+- '[CONDITION] diet clinical trial'
+- '[CONDITION] supplements evidence'
+- '[CONDITION] sleep impact'
+- '[CONDITION] mental health quality of life'
+- '[CONDITION] lifestyle intervention'
+- '[CONDITION] complementary medicine evidence'
+
+Keep searching until you stop finding valuable new material. Include peer-reviewed
+studies AND well-sourced practical guides. Don't skip the integrative/complementary
+stuff — a proactive patient wants the full landscape. Go deep on nutrition, exercise
+protocols, supplement evidence, mental health research specific to this condition.
+
+Context: this is for [WHO]. [Any additional context from Step 2.]"
+
+**Subagent D — Technology & Tools Source Collector:**
+
+"You are collecting the best current sources about technology, devices, and tools
+for [CONDITION]. Use WebSearch, save to raw/ using defuddle (or WebFetch + Write):
+
+```bash
+defuddle parse '<url>' --md -o raw/<descriptive-name>.md
+```
+
+Search for:
+- '[CONDITION] devices [CURRENT_YEAR]'
+- '[CONDITION] apps management'
+- '[CONDITION] wearable technology'
+- '[CONDITION] monitoring tools comparison'
+- '[CONDITION] patient advocacy organizations'
+- '[CONDITION] best apps [CURRENT_YEAR]'
+- '[CONDITION] technology FDA cleared [CURRENT_YEAR]'
+
+Keep searching until you stop finding valuable new material. Device comparisons,
+app reviews, advocacy org resource pages, product-specific user guides.
+
+Context: this is for [WHO]. [Any additional context from Step 2.]"
+
+**Subagent E — Patient Community Source Collector (REAL SOURCES ONLY):**
+
+"You are collecting real patient community content about [CONDITION]. Use WebSearch
+to find Reddit threads, patient forums, personal blogs, and advocacy discussions.
+Save each to raw/ using defuddle (or WebFetch + Write):
+
+```bash
+defuddle parse '<url>' --md -o raw/<descriptive-name>.md
+```
+
+ZERO HALLUCINATION RULE: Only save real URLs you actually find. Never invent sources.
+
+Search for:
+- '[CONDITION] site:reddit.com'
+- '[CONDITION] tips site:reddit.com'
+- '[CONDITION] newly diagnosed site:reddit.com'
+- '[CONDITION] patient forum'
+- '[CONDITION] patient blog'
+- '[CONDITION] things I wish I knew'
+- '[CONDITION] community tips'
+- 'r/[condition-subreddit]'
+
+Keep searching until you stop finding valuable new material. Go deep — search
+specific subreddits, follow links from comments, try multiple query angles
+('[CONDITION] tips', '[CONDITION] hacks', '[CONDITION] products', '[CONDITION]
+wish I knew'). The fringe practical wisdom requires digging past the first page.
+Prioritize threads with many replies and upvotes, but also look for smaller
+threads with specific, detailed advice.
+
+Context: this is for [WHO]. [Any additional context from Step 2.]"
+
+## Step 6: Compile the Wiki (Phase 2)
+
+Now read all the collected sources in raw/ and compile them into organized wiki pages.
+
+### 6a: Identify the natural organization
+
+Read through all raw/ sources. Notice how the content naturally clusters — what topics
+come up repeatedly, what the natural groupings are. The folder structure should emerge
+from what the sources actually cover, not from a generic template.
+
+For example, T1D sources might naturally cluster into:
+- Cure research (with subtopics: cell therapy, immunotherapy, immune evasion)
+- Blood sugar management (with subtopics: nutrition, supplements, adjunct medications)
+- Concepts (standalone reference: C-peptide, HbA1c, Time in Range, beta cells)
+- Technology (CGMs, pumps, apps)
+- Living with it (practical daily management, community wisdom)
+
+But a rare genetic condition might cluster completely differently. Let the sources
+tell you.
+
+### 6b: Create folder hierarchy and _index.md files
+
+Create the folder structure in wiki/. For every folder, create an `_index.md` that
+summarizes what's in that section — this is the progressive disclosure layer that
+makes the wiki navigable by both humans and LLMs.
+
+### 6c: Write wiki pages
+
+For each topic with enough source material, write a wiki page that:
+- Synthesizes the information from the relevant raw/ sources
+- Uses the voice from the PREAMBLE and WIKI_SCHEMA (lead with assessment, not background)
+- Links to raw/ sources in the frontmatter `sources:` field
+- Uses evidence tier callouts for claims
+- Uses wikilinks to connect to related pages and concept pages
+- Follows Obsidian Flavored Markdown conventions from the OBSIDIAN_MARKDOWN section
+
+### 6d: Create concept pages
+
+Identify concepts that appear across multiple pages (medical terms, biomarkers,
+treatment categories, etc.) and create standalone concept pages. Each concept page:
+- Defines the term in plain language
+- Explains why it matters for this disease
+- Links to all wiki pages where it's discussed
+
+### 6e: Create personal/ placeholder
+
+Create `wiki/personal/_index.md` explaining that this section is for personal health
+data and how to use /hstack-wiki-ingest.
+
+## Step 7: Generate Navigation Files
+
+### index.md
+
+Write the root index listing every section and page with one-line summaries. This
+is the entry point for both human browsing and LLM navigation.
+
+### CLAUDE.md
+
+Generate the vault's CLAUDE.md. This is the most important file in the vault — it
+tells every future Claude session how to behave when working in this directory.
+
+Include:
+- Disease name and who it's for
+- Complete manifest of folders and pages created, with purposes
+- The wiki voice (reference the preamble persona)
+- All conventions from WIKI_SCHEMA
+- Instructions for /hstack-wiki-ingest, /hstack-wiki-refresh, /hstack-wiki-lint
+
+**Querying — the wiki as primary source:**
+- "This vault is a curated knowledge base compiled from real sources. When answering
+  questions about [CONDITION], always read index.md and the relevant wiki pages first.
+  Ground your answers in the wiki's compiled content and cite specific pages. The wiki
+  is the primary source — do not answer from training data alone when wiki content
+  exists on the topic."
+- "When discussing personal results, always read the original file in raw/, not just
+  the wiki's interpretation."
+- "If the wiki doesn't cover something the user asks about, say so — and offer to
+  research it and add new sources (via /hstack-wiki-refresh or by collecting sources
+  into raw/ and running /hstack-wiki-ingest)."
+
+**Filing answers back — explorations compound:**
+- "When a conversation produces a valuable analysis, comparison, or connection that
+  doesn't exist in the wiki yet, offer to file it as a new wiki page. The user's
+  explorations and questions should compound in the knowledge base, not disappear
+  into chat history."
+
+### log.md
+
+Write the initial log entry recording what was collected and compiled.
+
+## Step 8: Open in Obsidian
+
+Tell the user:
+
+"Your wiki is ready at `[path]`.
+
+**To open in Obsidian:**
+1. Install Obsidian if you haven't: https://obsidian.md
+2. Open Obsidian → 'Open folder as vault' → select `[path]`
+3. Start with the index or browse the folder hierarchy
+
+**What's in here:**
+- [N] sources collected in raw/
+- [N] wiki pages compiled across [N] sections
+- Concept pages for key terms
+- Every page links back to its raw sources
+- Evidence labeled by quality tier
+
+**Next steps:**
+- Drop personal health documents into raw/ and run /hstack-wiki-ingest
+- Run /hstack-wiki-refresh periodically to find new sources
+- Run /hstack-wiki-lint to check for gaps and inconsistencies"
 
 ## Edge Cases
 
-- **Non-text files in unsupported formats:** Ask the user to convert or describe.
-- **Duplicate content:** Note in log but don't create redundant pages. Update existing.
-- **Mixed content:** A doctor's note that cites a study — handle both aspects.
-- **Content that doesn't fit the current structure:** This is how the wiki grows.
-  Create new sections as needed, with _index.md files.
+- **Vault already exists at path:** Ask — overwrite, pick a new name, or abort.
+- **Very rare disease with few sources:** Be honest about how many sources were found.
+  The wiki will be thinner but it's a starting point. The user can add sources to
+  raw/ manually and run /hstack-wiki-ingest to build it up.
+- **Defuddle not installed:** Fall back to WebFetch + Write for every source. Note in
+  the output that installing defuddle (`npm install -g defuddle`) will improve future
+  source collection.
+- **User is overwhelmed:** "Start with the index and follow what interests you. The
+  rest will be here when you need it."

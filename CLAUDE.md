@@ -18,17 +18,17 @@ bun test                                # All tests
 shared/preamble.md          ← Single source of truth for voice, safety, escalation
         │
         ▼
-health-*/SKILL.md.tmpl      ← Skill templates (what you edit)
+hstack-*/SKILL.md.tmpl      ← Skill templates (what you edit)
         │
    gen-skill-docs.ts        ← Replaces {{PREAMBLE}} with shared/preamble.md contents
         │
         ▼
-health-*/SKILL.md           ← Generated output (committed, don't edit directly)
+hstack-*/SKILL.md           ← Generated output (committed, don't edit directly)
 ```
 
 ## Conventions
 
-- Skill directories are named `health-*` (obviously health-related for coexistence with coding tools)
+- Skill directories are named `hstack-*`
 - Every SKILL.md.tmpl must include `{{PREAMBLE}}` — this injects the shared persona and safety protocols
 - Generated SKILL.md files are committed so users can install without a build step
 - After editing any .tmpl or shared/ file, run `bun run gen:skill-docs` and commit the generated output
@@ -36,7 +36,7 @@ health-*/SKILL.md           ← Generated output (committed, don't edit directly
 
 ## Adding a Skill
 
-1. `mkdir health-your-skill-name`
+1. `mkdir hstack-your-skill-name`
 2. Create `SKILL.md.tmpl` with frontmatter (`name`, `description`) and `{{PREAMBLE}}`
 3. `bun run gen:skill-docs`
 4. Add a test case in `test/skill-llm-eval.test.ts`

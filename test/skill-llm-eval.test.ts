@@ -36,31 +36,31 @@ interface SkillEval {
 
 const SKILL_EVALS: SkillEval[] = [
   {
-    skill: "health-prepare-for-visit",
+    skill: "hstack-prepare-for-visit",
     focusArea:
       "appointment preparation — helping patients build an agenda with questions, " +
       "understand what to expect, and know what to bring",
   },
   {
-    skill: "health-understand-results",
+    skill: "hstack-understand-results",
     focusArea:
       "interpreting medical test results and diagnoses — explaining what numbers mean, " +
       "separating normal from notable, and generating follow-up questions",
   },
   {
-    skill: "health-summarize-research",
+    skill: "hstack-summarize-research",
     focusArea:
       "synthesizing medical research — distinguishing between proven treatments, " +
       "clinical trials, and early-stage research with clear tier labels",
   },
   {
-    skill: "health-discuss-case",
+    skill: "hstack-discuss-case",
     focusArea:
       "acute health triage and ongoing case discussion — the '3am worry' tool that " +
       "gives red/yellow/green assessments and reassurance vs. escalation",
   },
   {
-    skill: "health-wiki-init",
+    skill: "hstack-wiki-init",
     focusArea:
       "bootstrapping a disease-focused Obsidian wiki — researching the full landscape " +
       "(clinical, treatments, lifestyle, frontier, patient communities) and building " +
@@ -68,7 +68,7 @@ const SKILL_EVALS: SkillEval[] = [
       "who has the disease themselves",
   },
   {
-    skill: "health-wiki-ingest",
+    skill: "hstack-wiki-ingest",
     focusArea:
       "processing raw files (lab results, doctor's notes, research articles) dropped " +
       "into a disease wiki — interpreting personal health data clinically, weaving " +
@@ -76,16 +76,16 @@ const SKILL_EVALS: SkillEval[] = [
       "back to original unedited sources",
   },
   {
-    skill: "health-wiki-refresh",
+    skill: "hstack-wiki-refresh",
     focusArea:
       "re-researching the state of the art for a disease and updating the wiki — " +
       "finding bleeding-edge trial results, new approvals, community discoveries, " +
       "with both broad (refresh everything) and focused (specific topic) modes",
   },
   {
-    skill: "health-wiki-lint",
+    skill: "hstack-wiki-lint",
     focusArea:
-      "health-checking a disease wiki for structural issues (broken links, orphans, " +
+      "hstack-checking a disease wiki for structural issues (broken links, orphans, " +
       "stale index) and content quality (contradictions, stale claims, missing cross-" +
       "references, gaps in coverage) with auto-fix for structural and report for content",
   },

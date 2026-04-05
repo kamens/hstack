@@ -66,10 +66,6 @@ Following [Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf
 
 To use the wiki, open the vault folder in Obsidian and browse — or start a Claude Code session in the vault directory and ask questions. The vault's `CLAUDE.md` tells Claude to ground its answers in the wiki's content, not training data.
 
-Asking the wiki about actionable lifestyle tips for a T1D patient — it pulls from the nutrition, exercise, and living-with sections, cross-references personal lab data, and gives specific, sourced recommendations:
-
-![Wiki Q&A example — asking about lifestyle tips and getting specific, wiki-grounded recommendations](assets/wiki-qa-example.png)
-
 ## See it work
 
 Real example using `/hstack-prepare-for-visit`:
@@ -174,6 +170,12 @@ hstack: [asks about recent illness, fever, when pain started, whether
            you won't sleep otherwise
         5. "Parent can't sleep" is a legitimate reason to go to the ER
 ```
+
+### Querying a disease wiki
+
+Asking a T1D wiki about actionable lifestyle tips — it pulls from the nutrition, exercise, and living-with sections, cross-references personal lab data, and gives specific, wiki-grounded recommendations:
+
+![Wiki Q&A example — asking about lifestyle tips and getting specific, wiki-grounded recommendations](assets/wiki-qa-example.png)
 
 ## Important
 

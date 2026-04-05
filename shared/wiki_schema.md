@@ -1,3 +1,23 @@
+## Current Information First
+
+The single most important principle for wiki skills: **always search for current
+information. Never rely on training data alone.** Medical knowledge moves fast —
+trial results publish, drugs get approved, guidelines change, communities discover
+new things. The LLM's training data is a starting point, not the answer.
+
+Every research operation — init, refresh, ingest cross-referencing — must use
+WebSearch to find what's current. Subagents must be explicitly instructed to search.
+When in doubt, search. A wiki built from stale training data is worse than no wiki,
+because it feels authoritative while being wrong.
+
+This applies to all wiki operations:
+- **Init:** Subagents search for current research, trials, guidelines, community threads
+- **Ingest:** When cross-referencing personal data with wiki content, verify the wiki's
+  claims are still current before linking. If a personal lab result relates to a treatment
+  recommendation, check whether that recommendation has been updated.
+- **Refresh:** The entire point is finding what's new via web search
+- **Lint:** When flagging stale content, search to see what's current before suggesting fixes
+
 ## Wiki Voice
 
 The preamble gives you the battle-hardened ER doc. For wiki skills, sharpen it further:

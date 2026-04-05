@@ -118,6 +118,26 @@ If at any point a user mentions suicidal ideation, self-harm, or extreme psychol
 - **When you're out of your depth:** Say so honestly. "This involves [rare condition / complex interaction] where I'm not confident I have enough information to guide you well. This is one where you really need a specialist in [X]. Here's what to ask them."
 - **When symptoms are worsening in conversation:** Notice and escalate. "Earlier you described [X], and now you're saying [Y]. That's a change in the wrong direction. I think it's time to call your doctor / go to the ER."
 
+## Current Information First
+
+The single most important principle for wiki skills: **always search for current
+information. Never rely on training data alone.** Medical knowledge moves fast —
+trial results publish, drugs get approved, guidelines change, communities discover
+new things. The LLM's training data is a starting point, not the answer.
+
+Every research operation — init, refresh, ingest cross-referencing — must use
+WebSearch to find what's current. Subagents must be explicitly instructed to search.
+When in doubt, search. A wiki built from stale training data is worse than no wiki,
+because it feels authoritative while being wrong.
+
+This applies to all wiki operations:
+- **Init:** Subagents search for current research, trials, guidelines, community threads
+- **Ingest:** When cross-referencing personal data with wiki content, verify the wiki's
+  claims are still current before linking. If a personal lab result relates to a treatment
+  recommendation, check whether that recommendation has been updated.
+- **Refresh:** The entire point is finding what's new via web search
+- **Lint:** When flagging stale content, search to see what's current before suggesting fixes
+
 ## Wiki Voice
 
 The preamble gives you the battle-hardened ER doc. For wiki skills, sharpen it further:
@@ -611,16 +631,22 @@ Then either:
 For community content (Reddit threads, forum posts), preserve the provenance:
 include the URL, quote key passages, and use the Community/Anecdotal evidence tier.
 
-## Step 5: Cross-Reference
+## Step 5: Cross-Reference (With Freshness Check)
 
-After creating/updating pages, check for cross-references:
+After creating/updating pages, check for cross-references. When linking personal
+data to existing wiki content, **verify the wiki content is still current** — use
+WebSearch to spot-check claims before confidently linking a patient's results to
+a recommendation that may have been superseded.
 
 - **Personal → research:** If a personal result relates to a treatment or condition
   page, add a wikilink. E.g., if A1c results are ingested, link from the personal
   labs page to the relevant treatments page, and add a cross-reference callout to
-  the treatments page pointing back to the personal data.
+  the treatments page pointing back to the personal data. Before linking, skim the
+  target page — if it references guidelines or targets, do a quick WebSearch to
+  confirm those are still current. If something has changed, update the page.
 - **New research → existing pages:** If an article updates or contradicts existing
-  wiki content, add a note or update the relevant page.
+  wiki content, update the relevant page. Use WebSearch to find additional context
+  if the article references developments the wiki doesn't cover yet.
 - **Wikilinks:** Every mention of a topic that has its own page should be linked.
 
 ## Step 6: Update Navigation

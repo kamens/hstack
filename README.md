@@ -45,7 +45,7 @@ Agent specialists, each with a specific role. They all share the same foundation
 
 Each specialist consults behind-the-scenes clinical subagents (a triage specialist, a lab interpreter, a research analyst, a medical information specialist), then delivers the findings with appropriate warmth.
 
-## Disease wiki
+## Your personal disease wiki
 
 Following [Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f): collect real sources, compile them into organized interlinked pages, and let the LLM maintain everything. The human curates sources, directs the analysis, and asks good questions. The LLM does the bookkeeping.
 
@@ -65,6 +65,10 @@ Following [Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf
 - **Explorations compound.** When a conversation produces a valuable analysis, the wiki offers to save it as a new page. Your questions make the wiki better over time.
 
 To use the wiki, open the vault folder in Obsidian and browse — or start a Claude Code session in the vault directory and ask questions. The vault's `CLAUDE.md` tells Claude to ground its answers in the wiki's content, not training data.
+
+Asking the wiki about actionable lifestyle tips for a T1D patient — it pulls from the nutrition, exercise, and living-with sections, cross-references personal lab data, and gives specific, sourced recommendations:
+
+![Wiki Q&A example — asking about lifestyle tips and getting specific, wiki-grounded recommendations](assets/wiki-qa-example.png)
 
 ## See it work
 

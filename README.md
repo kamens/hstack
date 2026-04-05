@@ -4,7 +4,11 @@ I find myself constantly talking to LLMs when dealing with health situations on 
 
 Understanding results. Preparing questions for the next doctor visit. Breaking down diagnoses. Mapping out treatment options. Summarizing bleeding-edge research. Reviewing the last few visits and spotting what doesn't add up.
 
-Inspired by the unreasonable effectiveness of [Garry Tan's gstack](https://github.com/garrytan/gstack) and Every's [Compound Engineering plugin](https://github.com/EveryInc/compound-engineering-plugin), **hstack is a collection of tools and agent specialists built to help those who use LLMs as healthcare advisors.** It's not a doctor — but it'll help you better understand them, communicate with them, interpret your own results, and make more informed decisions about your care.
+Every time, I'm re-doing prompts from scratch. Re-explaining context. Re-building the same workflows I've built a dozen times before.
+
+Inspired by the unreasonable effectiveness of [Garry Tan's gstack](https://github.com/garrytan/gstack), Every's [Compound Engineering plugin](https://github.com/EveryInc/compound-engineering-plugin), and [Andrej Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f), **hstack is a collection of tools and agent specialists built to help those who use LLMs as healthcare advisors.** It's not a doctor — but it'll help you better understand them, communicate with them, interpret your own results, and make more informed decisions about your care.
+
+For someone dealing with a specific disease, hstack can also build a personal, disease-specific wiki — the kind of thing you'd have if a brilliant doctor who both knows your case AND has your disease spent weeks organizing everything they know into one navigable place for you. Current research, treatment options, frontier science, lifestyle interventions, patient community wisdom — compiled from real sources, organized in [Obsidian](https://obsidian.md), and kept up to date.
 
 **Who this is for:**
 - **Patients and caregivers** — anyone navigating a health situation for themselves or someone they love
@@ -16,7 +20,7 @@ Inspired by the unreasonable effectiveness of [Garry Tan's gstack](https://githu
 1. Install hstack (30 seconds — see below)
 2. Run `/hstack-discuss-case` — describe something you're worried about. See how it responds.
 3. Run `/hstack-understand-results` — paste some test results or a diagnosis you've received.
-4. Run `/hstack-prepare-for-visit` — tell it about an upcoming appointment and watch it build your agenda.
+4. Run `/hstack-wiki-init` — give it a disease name and watch it build you a comprehensive Obsidian wiki.
 
 ## Install
 
@@ -30,7 +34,7 @@ Or run it yourself in a terminal — same command, same result.
 
 ## Your specialists
 
-Four agent specialists, each with a specific role. They all share the same foundational voice — a battle-hardened ER doc who's also a patient advocate, a clinical results interpreter, and a scout for the latest R&D — but each brings a different expertise to the conversation.
+Agent specialists, each with a specific role. They all share the same foundational voice — a battle-hardened ER doc who's also a patient advocate, a clinical results interpreter, and a scout for the latest R&D — but each brings a different expertise to the conversation.
 
 | Skill | Your specialist | What they do |
 |-------|----------------|--------------|
@@ -40,6 +44,27 @@ Four agent specialists, each with a specific role. They all share the same found
 | `/hstack-discuss-case` | **ER Doc on Call** | The 3am tool. Something is happening and you need to know: is this normal, or do I need to act? Gives a clear red/yellow/green assessment — and knows when "you're okay" is the right answer. |
 
 Each specialist consults behind-the-scenes clinical subagents (a triage specialist, a lab interpreter, a research analyst, a medical information specialist), then delivers the findings with appropriate warmth.
+
+## Disease wiki
+
+Following [Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f): collect real sources, compile them into organized interlinked pages, and let the LLM maintain everything. The human curates sources, directs the analysis, and asks good questions. The LLM does the bookkeeping.
+
+| Skill | What it does |
+|-------|-------------|
+| `/hstack-wiki-init` | Bootstraps a disease wiki from scratch. Searches the web for real sources — research papers, trial results, treatment guidelines, patient community threads — saves them to `raw/`, then compiles everything into an organized, interlinked Obsidian vault. |
+| `/hstack-wiki-ingest` | Processes files you drop into `raw/` — personal lab results, doctor's notes, articles you found interesting. Interprets them, weaves them into the wiki, cross-references with existing content. |
+| `/hstack-wiki-refresh` | Re-researches the landscape and updates the wiki with what's changed. Broad ("refresh everything") or focused ("refresh with the latest GLP-1 data for T1D"). Collects new sources first, then compiles updates. |
+| `/hstack-wiki-lint` | Health-checks the wiki for broken links, missing cross-references, stale content, contradictions, and gaps. Auto-fixes structural issues, flags content issues for you. |
+
+**Core principles:**
+
+- **Source-first.** The wiki is compiled from real documents saved in `raw/`, not synthesized from LLM knowledge. This produces richer content and verifiable claims.
+- **Emergent organization.** Folder structure comes from the content, not a prescribed template. The wiki organizes itself around what the sources actually cover.
+- **Progressive disclosure.** Every folder has a summary (`_index.md`) so both humans and LLMs can navigate without reading everything.
+- **Your data stays yours.** Personal health documents in `raw/` are never modified. Wiki pages link back to the originals. When you ask about your results, the LLM reads the raw source, not just its own interpretation.
+- **Explorations compound.** When a conversation produces a valuable analysis, the wiki offers to save it as a new page. Your questions make the wiki better over time.
+
+To use the wiki, open the vault folder in Obsidian and browse — or start a Claude Code session in the vault directory and ask questions. The vault's `CLAUDE.md` tells Claude to ground its answers in the wiki's content, not training data.
 
 ## See it work
 
@@ -158,6 +183,8 @@ Each command is a carefully crafted prompt (a SKILL.md file) that shapes how Cla
 
 Specialists that benefit from clinical separation dispatch subagents — a triage specialist or lab interpreter runs in a separate context to give an unbiased clinical assessment, then the main skill wraps it in empathetic delivery. The clinical truth and the human delivery are handled separately so neither compromises the other.
 
+The wiki skills share additional conventions defined in `shared/wiki_schema.md` — source-first compilation, emergent organization, progressive disclosure, and evidence tier labeling. They use [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills) for Obsidian formatting (fetched automatically at build time) and [defuddle](https://github.com/nicholasgriffintn/defuddle) for clean web content extraction.
+
 ## Development
 
 Requires [bun](https://bun.sh/).
@@ -207,7 +234,7 @@ for Claude — what questions to ask, how to structure the response,
 when to dispatch subagents for clinical separation.
 ```
 
-The `{{PREAMBLE}}` placeholder is required — it injects the shared voice, escalation framework, and safety protocols that all specialists share.
+The `{{PREAMBLE}}` placeholder is required — it injects the shared voice, escalation framework, and safety protocols that all specialists share. Wiki skills also use `{{WIKI_SCHEMA}}`, `{{OBSIDIAN_MARKDOWN}}`, and `{{DEFUDDLE}}`.
 
 3. Generate and test:
 

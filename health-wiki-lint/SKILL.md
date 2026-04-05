@@ -315,6 +315,20 @@ Every folder in wiki/ must have one.
 done, what sources were processed, what pages were created/updated. Also serves as
 the mechanism for tracking which raw/ files have been processed.
 
+## The Wiki as Primary Source
+
+The vault's CLAUDE.md must instruct future Claude sessions to treat the wiki as the
+primary source when answering questions — not training data. The wiki was compiled
+from real, curated sources. When a user asks a question, Claude should read the index,
+navigate to relevant pages, and ground its answer in the wiki's content. If the wiki
+doesn't cover something, Claude should say so and offer to research it (adding new
+sources via /health-wiki-refresh or /health-wiki-ingest).
+
+When a conversation produces a valuable analysis or connection that doesn't exist in
+the wiki yet, Claude should offer to file it as a new wiki page. The user's
+explorations and questions compound in the knowledge base — they shouldn't disappear
+into chat history.
+
 <!-- Fetched from https://raw.githubusercontent.com/kepano/obsidian-skills/main/skills/obsidian-markdown/SKILL.md -->
 <!-- Do not edit — regenerate with: bun run gen:skill-docs -->
 

@@ -316,6 +316,20 @@ Every folder in wiki/ must have one.
 done, what sources were processed, what pages were created/updated. Also serves as
 the mechanism for tracking which raw/ files have been processed.
 
+## The Wiki as Primary Source
+
+The vault's CLAUDE.md must instruct future Claude sessions to treat the wiki as the
+primary source when answering questions — not training data. The wiki was compiled
+from real, curated sources. When a user asks a question, Claude should read the index,
+navigate to relevant pages, and ground its answer in the wiki's content. If the wiki
+doesn't cover something, Claude should say so and offer to research it (adding new
+sources via /health-wiki-refresh or /health-wiki-ingest).
+
+When a conversation produces a valuable analysis or connection that doesn't exist in
+the wiki yet, Claude should offer to file it as a new wiki page. The user's
+explorations and questions compound in the knowledge base — they shouldn't disappear
+into chat history.
+
 <!-- Fetched from https://raw.githubusercontent.com/kepano/obsidian-skills/main/skills/obsidian-markdown/SKILL.md -->
 <!-- Do not edit — regenerate with: bun run gen:skill-docs -->
 
@@ -817,13 +831,33 @@ is the entry point for both human browsing and LLM navigation.
 
 ### CLAUDE.md
 
-Generate the vault's structural manifest:
+Generate the vault's CLAUDE.md. This is the most important file in the vault — it
+tells every future Claude session how to behave when working in this directory.
+
+Include:
 - Disease name and who it's for
 - Complete manifest of folders and pages created, with purposes
 - The wiki voice (reference the preamble persona)
 - All conventions from WIKI_SCHEMA
 - Instructions for /health-wiki-ingest, /health-wiki-refresh, /health-wiki-lint
-- "When discussing personal results, always read the original file in raw/"
+
+**Querying — the wiki as primary source:**
+- "This vault is a curated knowledge base compiled from real sources. When answering
+  questions about [CONDITION], always read index.md and the relevant wiki pages first.
+  Ground your answers in the wiki's compiled content and cite specific pages. The wiki
+  is the primary source — do not answer from training data alone when wiki content
+  exists on the topic."
+- "When discussing personal results, always read the original file in raw/, not just
+  the wiki's interpretation."
+- "If the wiki doesn't cover something the user asks about, say so — and offer to
+  research it and add new sources (via /health-wiki-refresh or by collecting sources
+  into raw/ and running /health-wiki-ingest)."
+
+**Filing answers back — explorations compound:**
+- "When a conversation produces a valuable analysis, comparison, or connection that
+  doesn't exist in the wiki yet, offer to file it as a new wiki page. The user's
+  explorations and questions should compound in the knowledge base, not disappear
+  into chat history."
 
 ### log.md
 

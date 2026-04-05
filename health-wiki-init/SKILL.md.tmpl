@@ -212,67 +212,50 @@ many people echo the same thing. The value is in the specificity and the provena
 
 ## Step 6: Compile the Wiki
 
-This is where the voice lives or dies. Take all 5 subagent outputs and transform them
-into war-room briefings.
+The subagents produce raw clinical output. This step transforms it into wiki pages
+that follow the voice established in the PREAMBLE and WIKI_SCHEMA sections above.
 
-### overview.md — The Big Picture
+The key: write the way the existing hstack skills talk — lead with the assessment,
+follow with the explanation, let the content carry the authority. Never announce
+your personality or narrate what you're about to do. See the "What NOT to do"
+section in the WIKI_SCHEMA above.
 
-Write `wiki/overview.md` first. This is the page someone opens when they first launch
-the vault in Obsidian. It should:
+### overview.md — Start Here
 
-- Open with a direct, honest, human summary: "Here's what [CONDITION] is, in plain
-  language, and here's the landscape of what can be done about it."
-- Hit the key points: what it is, what the main treatment options are, what lifestyle
-  factors matter most, what's exciting on the frontier
+Write `wiki/overview.md` first. This is what someone opens when they launch the vault.
+- Summarize what the disease is and the landscape of what can be done
+- Hit the key points: what it is, treatment options, lifestyle factors, the frontier
 - Link to every major wiki page with context for why to read it
-- End with: "This wiki is maintained by an AI. It's comprehensive but not infallible.
-  Use it to prepare for conversations with your doctors, not to replace them."
+- Close with: "This wiki is maintained by an AI. Use it to prepare for conversations
+  with your doctors, not to replace them."
 
 ### wiki/disease/ pages
 
-Compile Subagent A's disease output. Create pages that explain the condition with
-the depth a proactive patient needs — mechanism, subtypes, biomarkers, prognosis —
-but always framed as "here's what this means for what you should DO."
+Compile Subagent A's disease output. Explain the condition with the depth a proactive
+patient needs — mechanism, subtypes, biomarkers, prognosis — framed through what
+the patient should do with each piece of information.
 
 ### wiki/treatments/ pages
 
 Compile Subagent B's output. One page per major treatment approach or drug, or group
-related treatments on a single page if that's clearer. Always lead with the
-recommendation, not the background.
+related treatments on a single page if that's clearer. Lead with the recommendation,
+then the reasoning.
 
 ### wiki/living/ pages
 
-Compile Subagents C, D, and E's output. This is where lifestyle, technology, and
-community wisdom converge. Organize by what makes sense for this disease — it might
-be by domain (nutrition, exercise, tech) or by daily routine, or by life stage.
-Community/anecdotal content from Subagent E gets its own pages or sections with clear
-provenance (URLs, quotes).
+Compile Subagents C, D, and E's output. Lifestyle, technology, and community wisdom
+converge here. Organize by what makes sense for this disease — it might be by domain
+(nutrition, exercise, tech) or by daily routine, or by life stage. Community/anecdotal
+content from Subagent E gets its own pages or sections with clear provenance (URLs, quotes).
 
 ### wiki/frontier/ pages
 
-Compile Subagent A's frontier output. These are the "watch this space" pages. For each
-item, be clear about: why it's exciting, how far away it is, and what a patient can
-do about it now (usually: nothing, but know it exists).
+Compile Subagent A's frontier output. For each item: what it is, how far away it is,
+and what a patient can do about it now (usually nothing, but know it exists).
 
 ### wiki/personal/
 
-Leave empty for now with a single placeholder page:
-
-```markdown
----
-title: Your Health Data
-last_updated: [DATE]
----
-# Personal Health Data
-
-_This section is empty — and that's fine. When you have lab results, doctor's notes,
-imaging reports, or other personal health documents, drop them into the `raw/` folder
-and run `/health-wiki-ingest`. The wiki will interpret your data, track trends over
-time, and cross-reference your results against the research in this wiki._
-
-_Your raw documents are always preserved unedited in `raw/` — the wiki pages here
-are interpretations that link back to your originals._
-```
+Leave empty with a single placeholder page explaining how to use /health-wiki-ingest.
 
 ### Page quality checklist
 
@@ -280,9 +263,10 @@ For every page you write, verify:
 - [ ] Frontmatter is complete (title, tags, last_updated)
 - [ ] Evidence tier callouts are used for every major claim
 - [ ] Wikilinks connect to related pages
-- [ ] The tone is war-room briefing, not encyclopedia
 - [ ] Medical terms are defined inline on first use
-- [ ] It leads with what matters most, not background
+- [ ] It leads with the assessment or recommendation, not background
+- [ ] No performative meta-commentary ("I'll be blunt," "My strong opinion," etc.)
+- [ ] Every sentence carries information — if you can delete it and lose nothing, delete it
 
 ## Step 7: Generate Navigation Files
 

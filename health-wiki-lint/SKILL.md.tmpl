@@ -2,10 +2,10 @@
 name: health-wiki-lint
 description: |
   Health-check a disease wiki for structural issues and content quality. Finds
-  broken wikilinks, orphan pages, stale content, contradictions between pages,
-  missing cross-references, and gaps in coverage. Auto-fixes structural problems,
-  flags content issues for the user. Use periodically to keep the wiki clean and
-  internally consistent.
+  broken wikilinks, missing _index.md files, orphan pages, shallow hierarchies,
+  missing concept pages, stale content, and contradictions. Auto-fixes structural
+  problems, flags content issues for the user. Use periodically to keep the wiki
+  clean and internally consistent.
 ---
 
 {{PREAMBLE}}
@@ -16,132 +16,105 @@ description: |
 
 # Lint the Wiki
 
-**You are the quality inspector.** A wiki is only useful if it's consistent, navigable,
-and trustworthy. Your job is to read the entire vault, find structural problems and
-content issues, fix what you can, and flag what needs human judgment. Karpathy calls
-this "health checks" — finding inconsistent data, imputing missing data, finding
-interesting connections for new article candidates, and incrementally cleaning up the
-wiki's data integrity.
+**You are the quality inspector.** A wiki is only useful if it's consistent,
+navigable, and trustworthy. Read the entire vault, find structural problems and
+content issues, fix what you can, and flag what needs human judgment.
 
-## Step 1: Find and Read the Vault
+Karpathy calls this "health checks" — finding inconsistent data, missing
+cross-references, data gaps, and incrementally improving the wiki's integrity.
 
-Read CLAUDE.md, index.md, and log.md. Then read every page in wiki/ — you need the
-full picture to find contradictions and gaps.
+## Step 1: Read the Vault
 
-If no vault found: "I don't see a wiki vault here. Run /health-wiki-init first."
+Read CLAUDE.md, index.md, log.md. Then read _index.md files at each level to
+understand the structure. Read wiki pages — prioritize recently-updated pages
+and pages with the most cross-references.
 
-If the vault is too large to read every page in one pass, read index.md for the
-full map, then read pages selectively — prioritize pages that have been updated most
-recently and pages with the most inbound/outbound wikilinks.
+## Step 2: Structural Checks (Auto-Fix)
 
-## Step 2: Structural Checks
+**Missing _index.md files:** Every folder in wiki/ must have one. If missing,
+create it by summarizing the folder's contents.
 
-These are mechanical problems you can auto-fix:
+**Broken wikilinks:** Links pointing to pages that don't exist. Fix by creating
+a stub page or correcting the link.
 
-**Broken wikilinks:** Find links that point to pages that don't exist.
-- Fix: create a stub page, or fix the link if the target was renamed/moved.
+**Orphan pages:** Pages with no inbound wikilinks. Add them to the parent
+_index.md and link from relevant pages.
 
-**Orphan pages:** Wiki pages with no inbound wikilinks (nothing links to them).
-- Fix: add them to index.md and link them from related pages.
+**Index staleness:** Pages that exist but aren't in index.md. Add them.
 
-**Index staleness:** Pages that exist in wiki/ but aren't listed in index.md.
-- Fix: add them with a one-line summary.
+**Missing frontmatter:** Pages without title, tags, sources, or last_updated.
+Add sensible defaults.
 
-**Missing frontmatter:** Pages without required frontmatter fields (title, tags, last_updated).
-- Fix: add sensible defaults.
+**Missing source provenance:** Personal data pages that don't link back to
+their raw/ source file. Add the provenance link.
 
-**Empty raw/ provenance:** Personal data pages in wiki/personal/ that don't link back
-to their source file in raw/.
-- Fix: add the provenance link if the source file can be identified.
+## Step 3: Organization Checks (Auto-Fix with Reporting)
 
-## Step 3: Content Checks
+**Shallow hierarchies:** Folders with 8+ pages and no subfolders — these
+probably need to be split into subtopics. Propose (and implement if clear)
+a sub-hierarchy based on content clustering.
 
-These require judgment — report them, don't auto-fix:
+**Missing concept pages:** Identify terms or concepts that appear in 3+ pages
+but have no standalone concept page. Create them.
 
-**Contradictions:** Page A says X, page B says Y about the same topic.
-- Report both with page links and the specific conflicting claims.
-- Suggest which is likely more current or better-evidenced.
+**Uneven coverage:** Sections with many sources and dense pages alongside
+sections with a single thin page. Flag thin sections and suggest running
+/health-wiki-refresh focused on those topics.
 
-**Stale claims:** Information with dates that suggest it may be outdated (e.g.,
-"Phase 3 results expected 2025" when it's now 2026 — those results should be in).
-- Report with the specific claim and suggest what to look up.
+## Step 4: Content Checks (Report Only)
+
+**Contradictions:** Page A says X, page B says Y. Report both with links and
+suggest which is likely more current.
+
+**Stale claims:** Information with dates suggesting it should be re-verified
+(e.g., "results expected 2025" when it's 2026). Report and suggest a focused
+/health-wiki-refresh.
+
+**Unsourced claims:** Wiki content that doesn't trace to any raw/ source.
+Flag — these may be LLM synthesis from init that should be grounded with
+real sources.
 
 **Missing evidence tiers:** Major claims without an evidence tier callout.
-- Report with the specific claim and suggest a tier.
+Flag with a suggested tier.
 
-**Gaps:** Topics mentioned in multiple pages but with no dedicated page.
-- Report with the topic name and which pages mention it.
+**Personal-research disconnects:** Personal health data that relates to
+research pages but isn't cross-referenced.
 
-**Thin pages:** Pages with very little content that could be expanded or merged.
-- Report with a suggestion (expand, merge into another page, or delete).
+## Step 5: Report
 
-**Personal-research disconnects:** Personal health data that relates to a research
-or treatment topic but isn't cross-referenced.
-- Report with specific suggestions for which pages should link to each other.
-
-**Missing connections:** Topics across the wiki that are clearly related but have
-no wikilinks between them.
-- Report with suggested links.
-
-## Step 4: Generate Lint Report
-
-Write the report directly to the user (not as a wiki page — lint reports are
-ephemeral). Structure it clearly:
+Report directly to the user (lint reports are ephemeral, not wiki pages):
 
 ```
 # Lint Report — [DATE]
 
 ## Auto-Fixed ([N] issues)
-- Fixed broken wikilink: [[old-target]] → [[new-target]] in page.md
-- Added [[orphan-page]] to index.md
-- Added frontmatter to [N] pages
+- Created _index.md in [folder]
+- Fixed [N] broken wikilinks
+- Created concept pages: [[concepts/term1]], [[concepts/term2]]
+- Split [folder] into [N] subfolders
 
 ## Needs Attention ([N] issues)
 
 ### Contradictions
-- [[treatments/drug-x]] says "first-line for all patients" but [[disease/subtypes]]
-  says "only effective for subtype A." These may need reconciliation.
+[specific contradictions with page links]
 
 ### Stale Content
-- [[frontier/trial-x]] says "results expected 2025" — these results should be
-  available now. Consider running /health-wiki-refresh focused on this topic.
+[specific stale claims with suggestions]
 
-### Gaps
-- "Gut microbiome" is mentioned in 4 pages but has no dedicated article.
+### Unsourced Claims
+[content that needs raw/ sources to ground it]
 
-### Suggested Connections
-- [[personal/labs-2026-03]] mentions A1c of 6.8% but doesn't link to
-  [[treatments/insulin-therapy]] where A1c targets are discussed.
+### Thin Sections
+[sections that need more sources — suggest /health-wiki-refresh]
 
-## Wiki Health Summary
+## Wiki Health
 - Total pages: [N]
-- Pages with complete frontmatter: [N]/[N]
-- Pages with evidence tier callouts: [N]/[N]
-- Cross-references: [N] wikilinks across [N] pages
-- Issues found: [N] ([N] auto-fixed, [N] flagged)
-- Overall: [Brief assessment — e.g., "Structurally sound, but the frontier/
-  section has several stale claims that need refreshing."]
+- Source files in raw/: [N]
+- Concept pages: [N]
+- Folders with _index.md: [N]/[N]
+- Issues: [N] auto-fixed, [N] flagged
 ```
 
-## Step 5: Update log.md
+## Step 6: Update log.md
 
-Append a lint entry:
-
-```markdown
-## [DATE] — lint
-- Structural issues found: [N] (all auto-fixed)
-- Content issues flagged: [N]
-- Key findings: [1-2 sentence summary of the most important issues]
-```
-
-## Edge Cases
-
-- **Brand new vault (just initialized):** Structural checks still apply (init might
-  have left broken links or incomplete frontmatter). Content checks will mostly pass
-  since everything was just written. Focus on completeness.
-- **Vault with no personal data yet:** Skip personal-research disconnect checks.
-  Note in the report: "No personal data ingested yet — run /health-wiki-ingest after
-  dropping files into raw/."
-- **Very large vault:** If you can't read every page, prioritize: index.md (always),
-  overview.md, pages with most recent last_updated dates, and pages referenced most
-  frequently in wikilinks. Report which pages you did and didn't review.
+Append a lint entry summarizing what was found and fixed.

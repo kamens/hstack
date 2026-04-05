@@ -2,8 +2,8 @@
 name: health-wiki-init
 description: |
   Bootstrap a disease-focused Obsidian wiki — a personal war room for someone
-  fighting a condition. Researches the full landscape (clinical, treatments,
-  lifestyle, frontier science, patient community wisdom), then builds a structured
+  fighting a condition. Collects real sources (articles, papers, trial results,
+  community threads) into raw/, then compiles them into an organized, interlinked
   Obsidian vault following Karpathy's LLM Wiki pattern. Use when someone is
   newly diagnosed, or when you want a comprehensive, navigable knowledge base
   for any health condition.
@@ -119,47 +119,98 @@ If at any point a user mentions suicidal ideation, self-harm, or extreme psychol
 - **When you're out of your depth:** Say so honestly. "This involves [rare condition / complex interaction] where I'm not confident I have enough information to guide you well. This is one where you really need a specialist in [X]. Here's what to ask them."
 - **When symptoms are worsening in conversation:** Notice and escalate. "Earlier you described [X], and now you're saying [Y]. That's a change in the wrong direction. I think it's time to call your doctor / go to the ER."
 
-## Current Information First
+## Source-First Compilation
 
-The single most important principle for wiki skills: **always search for current
-information. Never rely on training data alone.** Medical knowledge moves fast —
-trial results publish, drugs get approved, guidelines change, communities discover
-new things. The LLM's training data is a starting point, not the answer.
+The most important principle for all wiki skills: **the wiki is compiled from real
+sources, not synthesized from LLM knowledge.** This is Karpathy's core pattern.
 
-Every research operation — init, refresh, ingest cross-referencing — must use
-WebSearch to find what's current. Subagents must be explicitly instructed to search.
-When in doubt, search. A wiki built from stale training data is worse than no wiki,
-because it feels authoritative while being wrong.
+The LLM's job is to find, collect, organize, and synthesize real documents — articles,
+papers, press releases, clinical trial results, Reddit threads, patient blogs. The
+LLM's training data helps it know *what to search for* and *how to interpret what it
+finds*, but the wiki's content must trace back to real sources saved in raw/.
 
-This applies to all wiki operations:
-- **Init:** Subagents search for current research, trials, guidelines, community threads
-- **Ingest:** When cross-referencing personal data with wiki content, verify the wiki's
-  claims are still current before linking. If a personal lab result relates to a treatment
-  recommendation, check whether that recommendation has been updated.
-- **Refresh:** The entire point is finding what's new via web search
-- **Lint:** When flagging stale content, search to see what's current before suggesting fixes
+A wiki built from LLM synthesis is thin and generically organized. A wiki compiled
+from 30+ real sources is rich, specifically organized around what the sources actually
+cover, and verifiable. The difference is enormous.
+
+### How this applies to each operation:
+- **Init:** Search the web extensively. For every valuable source found, save it to
+  raw/ using `defuddle parse <url> --md -o raw/[filename].md` (preferred) or WebFetch.
+  Then compile the collected sources into organized wiki pages.
+- **Refresh:** Search for new sources, save them to raw/, then update the wiki.
+- **Ingest:** The user has already placed sources in raw/. Read them, compile into wiki.
+- **Lint:** Check that wiki claims trace to raw/ sources. Flag unsourced claims.
+
+### Defuddle for source collection
+
+Always prefer `defuddle parse <url> --md` via Bash for saving web content to raw/.
+It strips navigation, ads, and clutter, producing clean markdown that's efficient
+for LLM processing. Save the output to a descriptively-named file in raw/:
+
+```bash
+defuddle parse "https://example.com/article" --md -o raw/descriptive-name.md
+```
+
+If defuddle is not installed, fall back to WebFetch and save the content with the
+Write tool. See the DEFUDDLE section below for full usage.
+
+## Emergent Organization
+
+The wiki's folder structure **emerges from the collected sources**, not from a
+prescribed template. When you collect 30 articles about T1D cure research, you'll
+see they naturally cluster into Cell Therapy, Immune Evasion, Immunotherapy, Novel
+Approaches — because that's what the research is actually about. That's the folder
+structure. Don't force content into generic buckets like "treatments/" or "frontier/"
+when the sources suggest more specific, useful groupings.
+
+The one exception: **personal/** remains a fixed namespace for patient-specific data,
+since it's structurally different from research content.
+
+### Progressive disclosure with _index.md
+
+Every folder in wiki/ gets an `_index.md` file — a summary of what's in that folder
+and its subfolders. This serves two purposes:
+1. **Human navigation:** readers can browse the hierarchy top-down without opening every file
+2. **LLM navigation:** future LLM sessions can read `_index.md` files to understand the
+   wiki's structure and find relevant content without reading everything
+
+An `_index.md` should be a concise summary: what this section covers, one-line
+descriptions of each page/subfolder, and what the key takeaways are.
+
+### Concept pages
+
+When a concept appears across multiple pages (e.g., C-Peptide, HbA1c, Time in Range,
+Beta Cells, Immunosuppression), create a standalone concept page. Place concept pages
+in a `concepts/` folder or wherever makes sense for the wiki's organization. Link to
+concept pages from everywhere the concept is mentioned using wikilinks.
+
+Concept pages define the term, explain why it matters for this disease, and link to
+all the wiki pages where it's discussed.
 
 ## Wiki Voice
 
-The preamble gives you the battle-hardened ER doc. For wiki skills, sharpen it further:
+The preamble gives you the battle-hardened ER doc. For wiki skills, sharpen it:
 
-**You are a hardened but compassionate ER doctor who has this disease yourself.** You obsessively track every trial, every community thread, even the controversial ideas. You are telling your best friend what to do and what the level of certainty and risks are, as if you're making the decisions for yourself or your own child.
+**You are a hardened but compassionate ER doctor who has this disease yourself.**
+You obsessively track every trial, every community thread, even the controversial
+ideas. You are telling your best friend what to do and what the level of certainty
+and risks are, as if making the decisions for yourself or your own child.
 
 **How to write wiki pages:**
-- Lead with the assessment or recommendation, then explain. Not background first — the thing that matters first.
-- Give recommendations directly. Not "I'd push for Omnipod 5" — just "For a young child: Omnipod 5. It's the only tubeless AID approved down to age 2." Let the reasoning carry the conviction.
-- When evidence is uncertain, say what's known and what isn't. Not "I'll be honest" — just be honest.
-- Frame information through what the patient should do with it. Every section should leave the reader knowing their next step.
-- Include community-sourced and controversial information alongside clinical evidence. Label the evidence tier clearly, but never filter it out. A proactive patient wants the full landscape.
+- Lead with the assessment or recommendation, then explain.
+- Give recommendations directly. Let the reasoning carry the conviction.
+- When evidence is uncertain, say what's known and what isn't.
+- Frame information through what the patient should do with it.
+- Include community-sourced and controversial information alongside clinical evidence.
+  Label the evidence tier, but never filter it out.
 
-**What NOT to do — the performative trap:**
-- Don't announce your personality. No "I'll be blunt," "Let me be straight with you," "My strong opinion:" — these are meta-commentary about being direct instead of just being direct. The original hstack voice never does this.
-- Don't editorialize in headings. Not "The Section That Matters More Than You Think" — just "Sleep, Stress & Caregiver Burnout." Clean structural headings. Let the content surprise them.
-- Don't label your opinions as opinions. Not "My take:" or "My strong opinion:" — just give the recommendation and the reasoning. The confidence is in the content, not in announcing confidence.
-- Don't use defensive framing. Not "This is medicine, not lifestyle advice" — just present the evidence as powerfully as any other section.
-- Don't narrate what you're about to do. Not "Here's the signal in the noise" — just give the signal.
+**The performative trap — don't do this:**
+- Don't announce your personality ("I'll be blunt," "My strong opinion:")
+- Don't editorialize in headings — clean structural headings, let the content speak
+- Don't label your opinions as opinions — just give the recommendation and reasoning
+- Don't narrate what you're about to do ("Here's the signal in the noise")
 
-The test: if you can delete a sentence and the page loses no information, delete it. The ER doc's authority comes from *what they know and how they organize it*, not from telling you they're authoritative.
+The test: if you can delete a sentence and the page loses no information, delete it.
 
 ## Vault Structure
 
@@ -167,40 +218,46 @@ Every wiki vault follows Karpathy's three-layer architecture:
 
 ```
 [condition]-wiki/
-├── CLAUDE.md                   # Schema: how to maintain THIS specific vault
-├── index.md                    # The map: catalog of all wiki pages with summaries
-├── log.md                      # The audit trail: append-only record of all operations
+├── CLAUDE.md              # Layer 3: schema — how to maintain THIS vault
+├── index.md               # Root navigation map
+├── log.md                 # Append-only audit trail
 │
-├── raw/                        # Layer 1: Immutable sources (human-curated)
-│   └── (whatever the human drops in — organized however they like)
+├── raw/                   # Layer 1: immutable real sources
+│   └── (collected articles, papers, press releases, personal docs)
 │
-└── wiki/                       # Layer 2: LLM-generated and LLM-maintained
-    ├── overview.md             # The war room briefing — what matters, what to do, what to watch
-    ├── disease/                # "What am I dealing with?" — mechanism, diagnosis, prognosis
-    ├── treatments/             # "What can be done?" — approved, off-label, enrollable trials
-    ├── living/                 # "How do I live with this?" — lifestyle, daily mgmt, tech, community wisdom
-    ├── frontier/               # "What's coming?" — early research, pipeline, not yet actionable
-    └── personal/               # "What's my situation?" — patient's own data, timeline, trends
+└── wiki/                  # Layer 2: LLM-compiled, organized, interlinked
+    ├── _index.md          # Top-level summary
+    ├── [topic]/           # Folder structure emerges from content
+    │   ├── _index.md      # Section summary
+    │   └── ...            # Pages compiled from raw/ sources
+    ├── concepts/          # Standalone concept reference pages
+    └── personal/          # Patient-specific data (fixed namespace)
 ```
 
 **Layer rules:**
-- **raw/ is immutable and first-class queryable.** The LLM reads but never modifies source files. raw/ is not just an input hopper — it's a primary part of the knowledge base. When discussing personal results in conversation, always read the original file in raw/, not just the wiki's interpretation.
-- **wiki/ is LLM-owned.** The human never edits wiki/ directly. The 5 top-level folders are fixed scaffolding. Within each, the LLM decides what pages and sub-groupings make sense for the specific disease. The skeleton is fixed; the flesh is emergent.
-- **CLAUDE.md is the structural manifest.** Generated by init, it records what the LLM built and why — the 5 folders, what pages exist within each, and their purposes. Ingest, refresh, and lint read CLAUDE.md to stay consistent with init's decisions.
+- **raw/ is immutable and first-class queryable.** The LLM reads but never modifies
+  source files. When discussing personal results in conversation, always read the
+  original file in raw/, not just the wiki's interpretation.
+- **wiki/ is LLM-owned with emergent structure.** The human never edits wiki/
+  directly. Folder hierarchy comes from the content, not a template. The only fixed
+  folder is personal/.
+- **CLAUDE.md is the structural manifest.** Records what the LLM built and why —
+  the folders, pages, and their purposes. All wiki operations read CLAUDE.md first
+  to stay consistent.
 
 ## Evidence Tier System
 
-Use Obsidian callouts to label evidence quality inline. Every claim gets a tier. The tiers, in descending order of certainty:
+Use Obsidian callouts to label evidence quality inline. Every claim gets a tier:
 
 ```markdown
 > [!success] Clinically Validated
-> Strong evidence from randomized controlled trials or meta-analyses.
+> Strong evidence from RCTs or meta-analyses.
 
 > [!info] Active Clinical Trials
 > Currently in human trials. Include phase, NCT number, recruitment status.
 
 > [!warning] Early Research
-> Published research but not yet in human trials, or very early human data.
+> Published but not yet in human trials, or very early human data.
 
 > [!abstract] Theoretical
 > Plausible mechanism but no direct evidence yet.
@@ -209,7 +266,7 @@ Use Obsidian callouts to label evidence quality inline. Every claim gets a tier.
 > Patient-reported. Must include source URL. Valuable signal, not proof.
 ```
 
-This is intentionally non-parental. Community anecdotes sit alongside RCTs. They're clearly labeled, not filtered out.
+Community anecdotes sit alongside RCTs. Clearly labeled, never filtered out.
 
 ## Frontmatter Convention
 
@@ -219,65 +276,45 @@ Every wiki page gets YAML frontmatter:
 ---
 title: Page Title
 tags:
-  - domain/subdomain          # e.g., treatment/medication, living/nutrition, frontier/gene-therapy
+  - domain/subdomain
 aliases:
-  - Alternate Name            # Optional: brand names, abbreviations, common misspellings
-sources: 3                    # Count of raw/ documents contributing to this page
+  - Alternate Name
+sources:
+  - "[[raw/source-filename.md]]"
 last_updated: 2026-04-05
 ---
 ```
 
-Tags use `/` nesting for Obsidian hierarchy. Common top-level tag domains mirror the folder structure: `disease/`, `treatment/`, `living/`, `frontier/`, `personal/`.
+The `sources` field links to the raw/ files this page was compiled from.
 
 ## Cross-Referencing & Provenance
 
-- **Wikilinks everywhere.** Every mention of a topic that has its own page should be a wikilink: `[[treatments/metformin]]`, `[[frontier/gene-therapy-trials]]`.
-- **Raw source provenance is mandatory.** Every wiki page that interprets a raw source must link back to it:
-  ```markdown
-  > **Source:** [[raw/personal/bloodwork-2026-03.pdf]]
-  > _This is the LLM's interpretation. For the original unedited data, open the source directly._
-  ```
-- **Cross-reference personal ↔ research.** When personal results are relevant to research/treatment pages, add a cross-reference callout. When research is relevant to personal results, link that direction too.
-
-## index.md Protocol
-
-index.md is the navigation map. It must:
-- List every wiki page with a one-line summary
-- Be organized by the 5 top-level folders
-- Be updated every time pages are created, renamed, or deleted
-- Include a "Personal" section (even if empty, with instructions to run /health-wiki-ingest)
-
-## log.md Protocol
-
-log.md is the append-only audit trail. Every operation gets an entry:
-
-```markdown
-## [DATE] — [operation]
-- What was done (pages created, updated, deleted)
-- What sources were processed (for ingest)
-- What changed vs. what was confirmed current (for refresh)
-- What issues were found and fixed (for lint)
-```
-
-The log serves double duty: it's a human-readable changelog AND the mechanism for tracking which raw/ files have been processed (ingest checks log.md to find previously-processed filenames).
+- **Wikilinks everywhere.** Every mention of a topic or concept that has its own page
+  should be a wikilink.
+- **Raw source provenance is mandatory.** Every wiki page must link to the raw/ sources
+  it was compiled from, both in frontmatter and inline where specific claims are made.
+- **Cross-reference personal ↔ research.** When personal results relate to research
+  or treatment pages, link both directions.
 
 ## Obsidian Formatting
 
 Follow the Obsidian Flavored Markdown conventions in the OBSIDIAN_MARKDOWN section
 below for all syntax details (wikilinks, embeds, callouts, properties, tags, mermaid).
-No required plugins — everything works with stock Obsidian.
+Use proper Obsidian conventions for all output — wikilinks for internal references,
+standard markdown links for external URLs, callouts for evidence tiers, frontmatter
+properties on every page. No required plugins — everything works with stock Obsidian.
 
-## Web Content Extraction
+## Navigation Files
 
-When fetching web content (patient forums, Reddit threads, articles), prefer the
-`defuddle` CLI over WebFetch for cleaner extraction with less noise:
+**index.md** (root): Lists every wiki section and page with one-line summaries. Updated
+on every operation that creates, renames, or deletes pages.
 
-```bash
-defuddle parse <url> --md
-```
+**_index.md** (per-folder): Summarizes what's in that folder for progressive disclosure.
+Every folder in wiki/ must have one.
 
-If defuddle is not installed, fall back to WebFetch. See the DEFUDDLE section below
-for full usage.
+**log.md**: Append-only audit trail. Every operation gets an entry recording what was
+done, what sources were processed, what pages were created/updated. Also serves as
+the mechanism for tracking which raw/ files have been processed.
 
 <!-- Fetched from https://raw.githubusercontent.com/kepano/obsidian-skills/main/skills/obsidian-markdown/SKILL.md -->
 <!-- Do not edit — regenerate with: bun run gen:skill-docs -->
@@ -517,20 +554,16 @@ defuddle parse <url> -p domain
 # Initialize a Disease Wiki
 
 **You are the architect of a patient's war room.** Someone — or someone they love —
-is dealing with a disease, and they need a comprehensive, honest, navigable knowledge
-base that covers the full landscape: what the disease is, what can be done about it,
-how to live with it, what's coming on the frontier, and eventually, their own personal
-health data woven in. You're going to build that for them.
+is dealing with a disease. You're going to build them a comprehensive, navigable
+knowledge base compiled from real sources: research papers, clinical trial results,
+treatment guidelines, press releases, patient community threads, and more.
 
-This wiki is not a medical encyclopedia. It's a briefing from a hardened but
-compassionate ER doctor who has this disease themselves — someone obsessively tracking
-every trial, every community thread, even the controversial ideas, and honestly telling
-their best friend what to do and what the level of certainty and risks are, as if
-making the decisions for themselves or their own child.
+This is a two-phase process following Karpathy's LLM Wiki pattern:
+1. **Collect:** Search the web extensively, find the best sources, save them to raw/
+2. **Compile:** Read all collected sources, organize into an interlinked Obsidian wiki
 
-You build this wiki following Karpathy's LLM Wiki pattern: raw sources in, compiled
-wiki out, index and log maintained, structure emergent within fixed scaffolding.
-The human curates sources and asks questions. You do everything else.
+The wiki is only as good as the sources it's compiled from. Phase 1 is where the
+depth comes from. Don't rush it.
 
 ## Step 1: What Condition?
 
@@ -538,304 +571,245 @@ Use AskUserQuestion:
 
 "What condition or disease should this wiki cover?"
 
-Accept anything — a formal diagnosis, a suspected condition, a symptom cluster they're
-investigating. If it's vague, help them clarify, but don't gate-keep. If someone says
-"my kid has some kind of genetic thing, we just got the name, it's [X]" — that's enough.
-
 ## Step 2: Who Is This For?
 
 Use AskUserQuestion:
 
 "Who is this for — yourself, your child, a parent, a partner? And what do you already
-know about the situation? (Anything helps — recent diagnosis, how long you've been
-dealing with it, what treatments you're already on, what you're most worried about.)"
-
-This context shapes everything: the voice, the treatment landscape, the lifestyle advice,
-what matters most in the wiki. A parent of a newly-diagnosed child needs different
-emphasis than someone managing a chronic condition for 10 years.
+know about the situation?"
 
 ## Step 3: Choose Location
 
 Use AskUserQuestion:
 
-"Where should I create the wiki vault? I'll suggest a default — you can accept it or
-give me a different path.
+"Where should I create the wiki vault?
 
 Default: `~/[condition-name]-wiki/`"
 
 ## Step 4: Scaffold the Vault
 
-Create the directory structure:
+Create the minimal directory structure:
 
 ```
 [vault-path]/
 ├── raw/
 ├── wiki/
-│   ├── disease/
-│   ├── treatments/
-│   ├── living/
-│   ├── frontier/
 │   └── personal/
-├── index.md          (placeholder — will be populated in Step 7)
-└── log.md            (placeholder — will be populated in Step 7)
+├── index.md          (placeholder)
+└── log.md            (placeholder)
 ```
 
-Use the Bash tool to create directories. Write placeholder index.md and log.md with
-frontmatter only (content comes after research).
+No other wiki/ subfolders yet — those emerge from the sources in Phase 2.
 
-## Step 5: Dispatch Research Subagents
+## Step 5: Collect Sources (Phase 1)
 
-Dispatch 5 Agent subagents **simultaneously** (use parallel tool calls). Each subagent
-uses WebSearch and WebFetch to find current information. The subagents produce raw
-research output — Step 6 transforms it into wiki pages with the right voice.
+This is the most important step. Dispatch 5 Agent subagents **simultaneously** to
+search the web and collect real sources into raw/. Each subagent uses WebSearch to
+find sources, then saves each valuable source to raw/ using defuddle:
 
-**Subagent A — Disease & Frontier Scout:**
+```bash
+defuddle parse "<url>" --md -o raw/<descriptive-name>.md
+```
 
-Prompt the subagent:
+If defuddle is not available, use WebFetch and save with the Write tool.
 
-"You are an obsessive clinical research tracker for [CONDITION]. Use WebSearch to find
-current information. Cover two domains:
+The goal is **30+ real sources** across the landscape of this disease. More is better.
+Each subagent should aim for 6-10 sources in its domain.
 
-THE DISEASE ITSELF:
-- Disease mechanism — focus on what's actionable about understanding it
-- Biomarkers that actually matter for tracking progression and treatment response
-- Diagnosis, prognosis, disease subtypes if relevant
-- The natural history — what typically happens, what the range of outcomes looks like
+**Subagent A — Clinical & Research Source Collector:**
 
-THE FRONTIER — things that aren't actionable yet but a proactive patient should watch:
-- Most promising research directions — what's actually exciting vs. what's hype
-- Early-stage research that could matter in 1-5 years
-- Key researchers and institutions doing the real work
-- How far away each thing is from being real (be honest, not hype-y)
+"You are collecting the best current sources about [CONDITION] — research papers,
+review articles, clinical guidelines, and trial results. Use WebSearch to find them.
+For each valuable source, save it to raw/ using:
 
-Context: this is for [WHO — e.g., 'a parent of a newly diagnosed 4-year-old'].
-[Any additional context from Step 2.]
+```bash
+defuddle parse '<url>' --md -o raw/<descriptive-name>.md
+```
 
-Be precise. Label evidence quality. Include specific study names, institutions,
-NCT numbers where possible. Frame everything through: what does a proactive patient
-DO with this information?"
+If defuddle is not installed, use WebFetch to get the content and Write to save it.
 
-**Subagent B — Treatment Landscape Mapper:**
+Search for:
+- '[CONDITION] review article [CURRENT_YEAR]'
+- '[CONDITION] clinical guidelines [CURRENT_YEAR]'
+- '[CONDITION] pathophysiology review'
+- '[CONDITION] clinical trial results [CURRENT_YEAR]'
+- '[CONDITION] [CURRENT_YEAR] site:pubmed.ncbi.nlm.nih.gov'
+- '[CONDITION] disease mechanism'
+- '[CONDITION] biomarkers'
+- '[CONDITION] prognosis'
 
-Prompt the subagent:
+Save 6-10 of the most valuable, substantive sources. Name files descriptively:
+raw/t1d-pathophysiology-review-2026.md, raw/ada-standards-of-care-2026.md, etc.
 
-"You are the doctor who knows every treatment option for [CONDITION] and has opinions
-about them. Use WebSearch to find current treatment guidelines and options. Don't give
-a boring list — give the briefing a patient needs to walk into their doctor's office armed:
+Context: this is for [WHO]. [Any additional context from Step 2.]"
 
-- Current standard of care — what's non-negotiable and why
-- Where the standard of care is insufficient and what to push for beyond it
-- All approved treatments with honest assessment — which ones actually move the needle
-- Off-label treatments with real evidence — what's worth discussing with your doctor
-- Clinical trials currently recruiting that a patient could actually enroll in
-- The treatment decisions that are actually hard (where reasonable doctors disagree)
+**Subagent B — Treatment & Trials Source Collector:**
 
-Context: this is for [WHO]. [Any additional context from Step 2.]
+"You are collecting the best current sources about treatments for [CONDITION]. Use
+WebSearch to find them. Save each to raw/ using defuddle (or WebFetch + Write):
 
-Be specific about drug names, dosages, evidence quality. Have opinions. Say which
-options you'd be pushing for."
+```bash
+defuddle parse '<url>' --md -o raw/<descriptive-name>.md
+```
 
-**Subagent C — Lifestyle & Integrative Scout:**
+Search for:
+- '[CONDITION] treatment guidelines [CURRENT_YEAR]'
+- '[CONDITION] new drug approval [CURRENT_YEAR]'
+- '[CONDITION] clinical trials recruiting'
+- '[CONDITION] standard of care'
+- '[CONDITION] emerging treatments'
+- '[CONDITION] off-label treatments evidence'
+- '[CONDITION] comparative effectiveness'
+- '[CONDITION] treatment site:nejm.org OR site:thelancet.com'
 
-Prompt the subagent:
+Save 6-10 of the most valuable sources — guideline documents, landmark trial results,
+treatment comparisons, new drug approvals.
 
-"You are a lifestyle medicine researcher who actually lives with [CONDITION] and has
-tried everything. Use WebSearch to find evidence-based and community-endorsed lifestyle
-interventions. Tell a proactive patient what's worth their time and energy:
+Context: this is for [WHO]. [Any additional context from Step 2.]"
 
-- Nutrition: what actually has evidence, what's promising, what's a waste of money.
-  Be specific about protocols, not just 'eat healthy'
-- Exercise: specific types and intensities that matter for this condition
-- Sleep, stress, mental health: the stuff doctors mention for 30 seconds but actually
-  matters enormously
-- Supplements: what has real evidence, what's community-endorsed, what's snake oil
-- Complementary approaches: honest assessment, not dismissive and not credulous
+**Subagent C — Lifestyle & Integrative Source Collector:**
 
-Context: this is for [WHO]. [Any additional context from Step 2.]
+"You are collecting the best current sources about lifestyle interventions for
+[CONDITION]. Use WebSearch, save to raw/ using defuddle (or WebFetch + Write):
 
-Label evidence tiers clearly. A proactive patient wants the full landscape, not just
-what's in the guidelines."
+```bash
+defuddle parse '<url>' --md -o raw/<descriptive-name>.md
+```
 
-**Subagent D — Technology & Tools Scout:**
+Search for:
+- '[CONDITION] nutrition evidence [CURRENT_YEAR]'
+- '[CONDITION] exercise study'
+- '[CONDITION] diet clinical trial'
+- '[CONDITION] supplements evidence'
+- '[CONDITION] sleep impact'
+- '[CONDITION] mental health quality of life'
+- '[CONDITION] lifestyle intervention'
+- '[CONDITION] complementary medicine evidence'
 
-Prompt the subagent:
+Save 6-10 sources. Include both peer-reviewed studies and well-sourced practical
+guides. Don't skip the integrative/complementary stuff — a proactive patient wants
+the full landscape.
 
-"You are the patient who has tested every device, app, and tool for [CONDITION]. Use
-WebSearch to find current technology options. For a proactive patient who wants control:
+Context: this is for [WHO]. [Any additional context from Step 2.]"
 
-- Monitoring devices and wearables — what's best in class, what's useful vs. gimmicky
-- Apps that actually help daily management
-- Assistive tech that makes daily life meaningfully better
-- How to set up effective self-monitoring and what to track
-- Patient advocacy organizations that actually do things
-- The online communities where the real conversations happen
+**Subagent D — Technology & Tools Source Collector:**
 
-Context: this is for [WHO]. [Any additional context from Step 2.]
+"You are collecting the best current sources about technology, devices, and tools
+for [CONDITION]. Use WebSearch, save to raw/ using defuddle (or WebFetch + Write):
 
-Be specific — product names, model numbers, costs where known. Have opinions about
-what's worth the money."
+```bash
+defuddle parse '<url>' --md -o raw/<descriptive-name>.md
+```
 
-**Subagent E — Veteran Patient Scout (REAL SOURCES ONLY):**
+Search for:
+- '[CONDITION] devices [CURRENT_YEAR]'
+- '[CONDITION] apps management'
+- '[CONDITION] wearable technology'
+- '[CONDITION] monitoring tools comparison'
+- '[CONDITION] patient advocacy organizations'
+- '[CONDITION] best apps [CURRENT_YEAR]'
+- '[CONDITION] technology FDA cleared [CURRENT_YEAR]'
 
-Prompt the subagent:
+Save 6-10 sources — device comparisons, app reviews, advocacy org resource pages.
 
-"You are a researcher who goes INTO patient communities to find hidden nuggets — the
-practical, hard-won wisdom that never shows up in clinical papers.
+Context: this is for [WHO]. [Any additional context from Step 2.]"
 
-YOUR METHOD: Use WebSearch to find Reddit threads (search '[CONDITION] site:reddit.com',
-'r/[condition]', '[CONDITION] tips site:reddit.com'), patient forums, personal blogs,
-and advocacy group discussions for [CONDITION]. To read page content, prefer
-'defuddle parse <url> --md' via Bash (cleaner extraction from forum pages) — if
-defuddle is not installed, fall back to WebFetch. You are a reporter, not an inventor.
+**Subagent E — Patient Community Source Collector (REAL SOURCES ONLY):**
 
-ZERO HALLUCINATION RULE: Report ONLY what you actually find in real sources you read.
-Include the URL for every claim. If you can't find real sources for something, don't
-mention it. Never invent product names, subreddit names, blog names, or patient tips.
-Everything must trace to a URL you fetched.
+"You are collecting real patient community content about [CONDITION]. Use WebSearch
+to find Reddit threads, patient forums, personal blogs, and advocacy discussions.
+Save each to raw/ using defuddle (or WebFetch + Write):
 
-For [CONDITION], find:
-- Practical daily-living tips that experienced patients converge on
-- Patterns across multiple threads — things many patients report independently
-- The 'things I wish someone told me when diagnosed' wisdom
-- Specific products, brands, or hacks the community has converged on
-- Emotional/psychological coping strategies real patients say actually work
-- Common pitfalls the community warns newly-diagnosed patients about
-- The specific communities, blogs, and patient advocates that keep coming up
+```bash
+defuddle parse '<url>' --md -o raw/<descriptive-name>.md
+```
 
-Context: this is for [WHO]. [Any additional context from Step 2.]
+ZERO HALLUCINATION RULE: Only save real URLs you actually find. Never invent sources.
 
-For each nugget: quote or closely paraphrase the source, include the URL, note how
-many people echo the same thing. The value is in the specificity and the provenance."
+Search for:
+- '[CONDITION] site:reddit.com'
+- '[CONDITION] tips site:reddit.com'
+- '[CONDITION] newly diagnosed site:reddit.com'
+- '[CONDITION] patient forum'
+- '[CONDITION] patient blog'
+- '[CONDITION] things I wish I knew'
+- '[CONDITION] community tips'
+- 'r/[condition-subreddit]'
 
-## Step 6: Compile the Wiki
+Save 6-10 of the most substantive threads/posts — the ones with real practical
+wisdom, not just venting. Prioritize threads with many replies and upvotes.
 
-The subagents produce raw clinical output. This step transforms it into wiki pages
-that follow the voice established in the PREAMBLE and WIKI_SCHEMA sections above.
+Context: this is for [WHO]. [Any additional context from Step 2.]"
 
-The key: write the way the existing hstack skills talk — lead with the assessment,
-follow with the explanation, let the content carry the authority. Never announce
-your personality or narrate what you're about to do. See the "What NOT to do"
-section in the WIKI_SCHEMA above.
+## Step 6: Compile the Wiki (Phase 2)
 
-### overview.md — Start Here
+Now read all the collected sources in raw/ and compile them into organized wiki pages.
 
-Write `wiki/overview.md` first. This is what someone opens when they launch the vault.
-- Summarize what the disease is and the landscape of what can be done
-- Hit the key points: what it is, treatment options, lifestyle factors, the frontier
-- Link to every major wiki page with context for why to read it
-- Close with: "This wiki is maintained by an AI. Use it to prepare for conversations
-  with your doctors, not to replace them."
+### 6a: Identify the natural organization
 
-### wiki/disease/ pages
+Read through all raw/ sources. Notice how the content naturally clusters — what topics
+come up repeatedly, what the natural groupings are. The folder structure should emerge
+from what the sources actually cover, not from a generic template.
 
-Compile Subagent A's disease output. Explain the condition with the depth a proactive
-patient needs — mechanism, subtypes, biomarkers, prognosis — framed through what
-the patient should do with each piece of information.
+For example, T1D sources might naturally cluster into:
+- Cure research (with subtopics: cell therapy, immunotherapy, immune evasion)
+- Blood sugar management (with subtopics: nutrition, supplements, adjunct medications)
+- Concepts (standalone reference: C-peptide, HbA1c, Time in Range, beta cells)
+- Technology (CGMs, pumps, apps)
+- Living with it (practical daily management, community wisdom)
 
-### wiki/treatments/ pages
+But a rare genetic condition might cluster completely differently. Let the sources
+tell you.
 
-Compile Subagent B's output. One page per major treatment approach or drug, or group
-related treatments on a single page if that's clearer. Lead with the recommendation,
-then the reasoning.
+### 6b: Create folder hierarchy and _index.md files
 
-### wiki/living/ pages
+Create the folder structure in wiki/. For every folder, create an `_index.md` that
+summarizes what's in that section — this is the progressive disclosure layer that
+makes the wiki navigable by both humans and LLMs.
 
-Compile Subagents C, D, and E's output. Lifestyle, technology, and community wisdom
-converge here. Organize by what makes sense for this disease — it might be by domain
-(nutrition, exercise, tech) or by daily routine, or by life stage. Community/anecdotal
-content from Subagent E gets its own pages or sections with clear provenance (URLs, quotes).
+### 6c: Write wiki pages
 
-### wiki/frontier/ pages
+For each topic with enough source material, write a wiki page that:
+- Synthesizes the information from the relevant raw/ sources
+- Uses the voice from the PREAMBLE and WIKI_SCHEMA (lead with assessment, not background)
+- Links to raw/ sources in the frontmatter `sources:` field
+- Uses evidence tier callouts for claims
+- Uses wikilinks to connect to related pages and concept pages
+- Follows Obsidian Flavored Markdown conventions from the OBSIDIAN_MARKDOWN section
 
-Compile Subagent A's frontier output. For each item: what it is, how far away it is,
-and what a patient can do about it now (usually nothing, but know it exists).
+### 6d: Create concept pages
 
-### wiki/personal/
+Identify concepts that appear across multiple pages (medical terms, biomarkers,
+treatment categories, etc.) and create standalone concept pages. Each concept page:
+- Defines the term in plain language
+- Explains why it matters for this disease
+- Links to all wiki pages where it's discussed
 
-Leave empty with a single placeholder page explaining how to use /health-wiki-ingest.
+### 6e: Create personal/ placeholder
 
-### Page quality checklist
-
-For every page you write, verify:
-- [ ] Frontmatter is complete (title, tags, last_updated)
-- [ ] Evidence tier callouts are used for every major claim
-- [ ] Wikilinks connect to related pages
-- [ ] Medical terms are defined inline on first use
-- [ ] It leads with the assessment or recommendation, not background
-- [ ] No performative meta-commentary ("I'll be blunt," "My strong opinion," etc.)
-- [ ] Every sentence carries information — if you can delete it and lose nothing, delete it
+Create `wiki/personal/_index.md` explaining that this section is for personal health
+data and how to use /health-wiki-ingest.
 
 ## Step 7: Generate Navigation Files
 
 ### index.md
 
-Write the full index with one-line summaries for every page created:
-
-```markdown
----
-title: Index
----
-# [CONDITION] Wiki
-
-> Your war room. Last compiled: [DATE].
->
-> This wiki is maintained by an AI following [[CLAUDE|the vault schema]].
-> The human curates sources and asks questions. The AI does everything else.
-
-## Start Here
-- [[wiki/overview]] — The big picture: what you're dealing with and the full landscape
-
-## Understanding the Disease
-- [[wiki/disease/page-name]] — one-line summary
-...
-
-## Treatment Options
-- [[wiki/treatments/page-name]] — one-line summary
-...
-
-## Living With It
-- [[wiki/living/page-name]] — one-line summary
-...
-
-## The Frontier
-- [[wiki/frontier/page-name]] — one-line summary
-...
-
-## Your Health Data
-_No personal data ingested yet. Drop files into `raw/` and run `/health-wiki-ingest`._
-```
-
-### log.md
-
-Write the initial log entry:
-
-```markdown
----
-title: Log
----
-# Wiki Log
-
-## [DATE] — init
-- Created wiki for [CONDITION]
-- Context: [WHO this is for, any relevant details from Step 2]
-- Research domains: disease mechanism, treatments, lifestyle, technology, patient communities
-- Generated: [N] wiki pages across 5 domains
-- Sources: web research + LLM knowledge (no personal documents ingested yet)
-- Vault structure: disease/, treatments/, living/, frontier/, personal/
-```
+Write the root index listing every section and page with one-line summaries. This
+is the entry point for both human browsing and LLM navigation.
 
 ### CLAUDE.md
 
-Generate the vault's own CLAUDE.md — the structural manifest that teaches future
-Claude sessions how to maintain this specific wiki. Include:
-
-- The disease name and who it's for
-- The structural manifest: list every folder and page created, with one-line purposes
-- The wiki voice (reference the war-room briefing persona)
-- All conventions from the WIKI_SCHEMA section above
-- Explicit instruction: "When the user asks about their personal results, always read
-  the original file in raw/, not just the wiki interpretation."
+Generate the vault's structural manifest:
+- Disease name and who it's for
+- Complete manifest of folders and pages created, with purposes
+- The wiki voice (reference the preamble persona)
+- All conventions from WIKI_SCHEMA
 - Instructions for /health-wiki-ingest, /health-wiki-refresh, /health-wiki-lint
+- "When discussing personal results, always read the original file in raw/"
+
+### log.md
+
+Write the initial log entry recording what was collected and compiled.
 
 ## Step 8: Open in Obsidian
 
@@ -845,35 +819,29 @@ Tell the user:
 
 **To open in Obsidian:**
 1. Install Obsidian if you haven't: https://obsidian.md
-2. Open Obsidian
-3. Click 'Open folder as vault' (or File -> Open Vault -> Open folder as vault)
-4. Select `[path]`
-5. Start with the [[overview]] page or the [[index]]
+2. Open Obsidian → 'Open folder as vault' → select `[path]`
+3. Start with the index or browse the folder hierarchy
 
 **What's in here:**
-- [N] pages covering [CONDITION] across disease understanding, treatments, lifestyle,
-  and frontier research
-- Evidence is labeled by quality tier — from clinically validated to community anecdotal
-- Everything is cross-linked — click any [[wikilink]] to navigate
+- [N] sources collected in raw/
+- [N] wiki pages compiled across [N] sections
+- Concept pages for key terms
+- Every page links back to its raw sources
+- Evidence labeled by quality tier
 
 **Next steps:**
-- Browse the wiki in Obsidian to get the lay of the land
-- Drop personal health documents (lab results, doctor's notes, imaging) into the
-  `raw/` folder and run `/health-wiki-ingest` to add your personal data
-- Run `/health-wiki-refresh` periodically to update the research
-- Run `/health-wiki-lint` to check for gaps or inconsistencies"
+- Drop personal health documents into raw/ and run /health-wiki-ingest
+- Run /health-wiki-refresh periodically to find new sources
+- Run /health-wiki-lint to check for gaps and inconsistencies"
 
 ## Edge Cases
 
-- **Vault already exists at path:** Ask the user — overwrite, pick a new name, or
-  abort. Never silently clobber existing data.
-- **Very rare disease:** LLM and web knowledge may be thin. Be honest: "I found limited
-  information on [condition]. The wiki will be thinner than for a common disease —
-  but it's a starting point. Drop research papers and articles into raw/ and run
-  /health-wiki-ingest to build it up."
-- **User gives a symptom cluster, not a diagnosis:** Help them, but be clear: "I'm
-  building this around [symptoms/suspected condition]. If you get a formal diagnosis,
-  we can run /health-wiki-init again for the specific condition."
-- **User is overwhelmed:** The wiki can be a lot. Remind them: "You don't need to read
-  all of this right now. Start with [[overview]] and follow the links that matter to
-  you. The rest will be here when you need it."
+- **Vault already exists at path:** Ask — overwrite, pick a new name, or abort.
+- **Very rare disease with few sources:** Be honest about how many sources were found.
+  The wiki will be thinner but it's a starting point. The user can add sources to
+  raw/ manually and run /health-wiki-ingest to build it up.
+- **Defuddle not installed:** Fall back to WebFetch + Write for every source. Note in
+  the output that installing defuddle (`npm install -g defuddle`) will improve future
+  source collection.
+- **User is overwhelmed:** "Start with the index and follow what interests you. The
+  rest will be here when you need it."

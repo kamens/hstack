@@ -67,6 +67,14 @@ const SKILL_EVALS: SkillEval[] = [
       "a structured, navigable knowledge base with the voice of a proactive doctor " +
       "who has the disease themselves",
   },
+  {
+    skill: "health-wiki-ingest",
+    focusArea:
+      "processing raw files (lab results, doctor's notes, research articles) dropped " +
+      "into a disease wiki — interpreting personal health data clinically, weaving " +
+      "research into existing wiki pages, cross-referencing, and maintaining provenance " +
+      "back to original unedited sources",
+  },
 ];
 
 const JUDGE_PROMPT = `You are evaluating the quality of an AI health assistant's instruction document (SKILL.md).

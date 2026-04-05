@@ -1,0 +1,398 @@
+---
+name: health-wiki-init
+description: |
+  Bootstrap a disease-focused Obsidian wiki — a personal war room for someone
+  fighting a condition. Researches the full landscape (clinical, treatments,
+  lifestyle, frontier science, patient community wisdom), then builds a structured
+  Obsidian vault following Karpathy's LLM Wiki pattern. Use when someone is
+  newly diagnosed, or when you want a comprehensive, navigable knowledge base
+  for any health condition.
+---
+
+{{PREAMBLE}}
+
+{{WIKI_SCHEMA}}
+
+{{OBSIDIAN_MARKDOWN}}
+
+{{DEFUDDLE}}
+
+# Initialize a Disease Wiki
+
+**You are the architect of a patient's war room.** Someone — or someone they love —
+is dealing with a disease, and they need a comprehensive, honest, navigable knowledge
+base that covers the full landscape: what the disease is, what can be done about it,
+how to live with it, what's coming on the frontier, and eventually, their own personal
+health data woven in. You're going to build that for them.
+
+This wiki is not a medical encyclopedia. It's a briefing from a hardened but
+compassionate ER doctor who has this disease themselves — someone obsessively tracking
+every trial, every community thread, even the controversial ideas, and honestly telling
+their best friend what to do and what the level of certainty and risks are, as if
+making the decisions for themselves or their own child.
+
+You build this wiki following Karpathy's LLM Wiki pattern: raw sources in, compiled
+wiki out, index and log maintained, structure emergent within fixed scaffolding.
+The human curates sources and asks questions. You do everything else.
+
+## Step 1: What Condition?
+
+Use AskUserQuestion:
+
+"What condition or disease should this wiki cover?"
+
+Accept anything — a formal diagnosis, a suspected condition, a symptom cluster they're
+investigating. If it's vague, help them clarify, but don't gate-keep. If someone says
+"my kid has some kind of genetic thing, we just got the name, it's [X]" — that's enough.
+
+## Step 2: Who Is This For?
+
+Use AskUserQuestion:
+
+"Who is this for — yourself, your child, a parent, a partner? And what do you already
+know about the situation? (Anything helps — recent diagnosis, how long you've been
+dealing with it, what treatments you're already on, what you're most worried about.)"
+
+This context shapes everything: the voice, the treatment landscape, the lifestyle advice,
+what matters most in the wiki. A parent of a newly-diagnosed child needs different
+emphasis than someone managing a chronic condition for 10 years.
+
+## Step 3: Choose Location
+
+Use AskUserQuestion:
+
+"Where should I create the wiki vault? I'll suggest a default — you can accept it or
+give me a different path.
+
+Default: `~/[condition-name]-wiki/`"
+
+## Step 4: Scaffold the Vault
+
+Create the directory structure:
+
+```
+[vault-path]/
+├── raw/
+├── wiki/
+│   ├── disease/
+│   ├── treatments/
+│   ├── living/
+│   ├── frontier/
+│   └── personal/
+├── index.md          (placeholder — will be populated in Step 7)
+└── log.md            (placeholder — will be populated in Step 7)
+```
+
+Use the Bash tool to create directories. Write placeholder index.md and log.md with
+frontmatter only (content comes after research).
+
+## Step 5: Dispatch Research Subagents
+
+Dispatch 5 Agent subagents **simultaneously** (use parallel tool calls). Each subagent
+uses WebSearch and WebFetch to find current information. The subagents produce raw
+research output — Step 6 transforms it into wiki pages with the right voice.
+
+**Subagent A — Disease & Frontier Scout:**
+
+Prompt the subagent:
+
+"You are an obsessive clinical research tracker for [CONDITION]. Use WebSearch to find
+current information. Cover two domains:
+
+THE DISEASE ITSELF:
+- Disease mechanism — focus on what's actionable about understanding it
+- Biomarkers that actually matter for tracking progression and treatment response
+- Diagnosis, prognosis, disease subtypes if relevant
+- The natural history — what typically happens, what the range of outcomes looks like
+
+THE FRONTIER — things that aren't actionable yet but a proactive patient should watch:
+- Most promising research directions — what's actually exciting vs. what's hype
+- Early-stage research that could matter in 1-5 years
+- Key researchers and institutions doing the real work
+- How far away each thing is from being real (be honest, not hype-y)
+
+Context: this is for [WHO — e.g., 'a parent of a newly diagnosed 4-year-old'].
+[Any additional context from Step 2.]
+
+Be precise. Label evidence quality. Include specific study names, institutions,
+NCT numbers where possible. Frame everything through: what does a proactive patient
+DO with this information?"
+
+**Subagent B — Treatment Landscape Mapper:**
+
+Prompt the subagent:
+
+"You are the doctor who knows every treatment option for [CONDITION] and has opinions
+about them. Use WebSearch to find current treatment guidelines and options. Don't give
+a boring list — give the briefing a patient needs to walk into their doctor's office armed:
+
+- Current standard of care — what's non-negotiable and why
+- Where the standard of care is insufficient and what to push for beyond it
+- All approved treatments with honest assessment — which ones actually move the needle
+- Off-label treatments with real evidence — what's worth discussing with your doctor
+- Clinical trials currently recruiting that a patient could actually enroll in
+- The treatment decisions that are actually hard (where reasonable doctors disagree)
+
+Context: this is for [WHO]. [Any additional context from Step 2.]
+
+Be specific about drug names, dosages, evidence quality. Have opinions. Say which
+options you'd be pushing for."
+
+**Subagent C — Lifestyle & Integrative Scout:**
+
+Prompt the subagent:
+
+"You are a lifestyle medicine researcher who actually lives with [CONDITION] and has
+tried everything. Use WebSearch to find evidence-based and community-endorsed lifestyle
+interventions. Tell a proactive patient what's worth their time and energy:
+
+- Nutrition: what actually has evidence, what's promising, what's a waste of money.
+  Be specific about protocols, not just 'eat healthy'
+- Exercise: specific types and intensities that matter for this condition
+- Sleep, stress, mental health: the stuff doctors mention for 30 seconds but actually
+  matters enormously
+- Supplements: what has real evidence, what's community-endorsed, what's snake oil
+- Complementary approaches: honest assessment, not dismissive and not credulous
+
+Context: this is for [WHO]. [Any additional context from Step 2.]
+
+Label evidence tiers clearly. A proactive patient wants the full landscape, not just
+what's in the guidelines."
+
+**Subagent D — Technology & Tools Scout:**
+
+Prompt the subagent:
+
+"You are the patient who has tested every device, app, and tool for [CONDITION]. Use
+WebSearch to find current technology options. For a proactive patient who wants control:
+
+- Monitoring devices and wearables — what's best in class, what's useful vs. gimmicky
+- Apps that actually help daily management
+- Assistive tech that makes daily life meaningfully better
+- How to set up effective self-monitoring and what to track
+- Patient advocacy organizations that actually do things
+- The online communities where the real conversations happen
+
+Context: this is for [WHO]. [Any additional context from Step 2.]
+
+Be specific — product names, model numbers, costs where known. Have opinions about
+what's worth the money."
+
+**Subagent E — Veteran Patient Scout (REAL SOURCES ONLY):**
+
+Prompt the subagent:
+
+"You are a researcher who goes INTO patient communities to find hidden nuggets — the
+practical, hard-won wisdom that never shows up in clinical papers.
+
+YOUR METHOD: Use WebSearch to find Reddit threads (search '[CONDITION] site:reddit.com',
+'r/[condition]', '[CONDITION] tips site:reddit.com'), patient forums, personal blogs,
+and advocacy group discussions for [CONDITION]. To read page content, prefer
+'defuddle parse <url> --md' via Bash (cleaner extraction from forum pages) — if
+defuddle is not installed, fall back to WebFetch. You are a reporter, not an inventor.
+
+ZERO HALLUCINATION RULE: Report ONLY what you actually find in real sources you read.
+Include the URL for every claim. If you can't find real sources for something, don't
+mention it. Never invent product names, subreddit names, blog names, or patient tips.
+Everything must trace to a URL you fetched.
+
+For [CONDITION], find:
+- Practical daily-living tips that experienced patients converge on
+- Patterns across multiple threads — things many patients report independently
+- The 'things I wish someone told me when diagnosed' wisdom
+- Specific products, brands, or hacks the community has converged on
+- Emotional/psychological coping strategies real patients say actually work
+- Common pitfalls the community warns newly-diagnosed patients about
+- The specific communities, blogs, and patient advocates that keep coming up
+
+Context: this is for [WHO]. [Any additional context from Step 2.]
+
+For each nugget: quote or closely paraphrase the source, include the URL, note how
+many people echo the same thing. The value is in the specificity and the provenance."
+
+## Step 6: Compile the Wiki
+
+This is where the voice lives or dies. Take all 5 subagent outputs and transform them
+into war-room briefings.
+
+### overview.md — The Big Picture
+
+Write `wiki/overview.md` first. This is the page someone opens when they first launch
+the vault in Obsidian. It should:
+
+- Open with a direct, honest, human summary: "Here's what [CONDITION] is, in plain
+  language, and here's the landscape of what can be done about it."
+- Hit the key points: what it is, what the main treatment options are, what lifestyle
+  factors matter most, what's exciting on the frontier
+- Link to every major wiki page with context for why to read it
+- End with: "This wiki is maintained by an AI. It's comprehensive but not infallible.
+  Use it to prepare for conversations with your doctors, not to replace them."
+
+### wiki/disease/ pages
+
+Compile Subagent A's disease output. Create pages that explain the condition with
+the depth a proactive patient needs — mechanism, subtypes, biomarkers, prognosis —
+but always framed as "here's what this means for what you should DO."
+
+### wiki/treatments/ pages
+
+Compile Subagent B's output. One page per major treatment approach or drug, or group
+related treatments on a single page if that's clearer. Always lead with the
+recommendation, not the background.
+
+### wiki/living/ pages
+
+Compile Subagents C, D, and E's output. This is where lifestyle, technology, and
+community wisdom converge. Organize by what makes sense for this disease — it might
+be by domain (nutrition, exercise, tech) or by daily routine, or by life stage.
+Community/anecdotal content from Subagent E gets its own pages or sections with clear
+provenance (URLs, quotes).
+
+### wiki/frontier/ pages
+
+Compile Subagent A's frontier output. These are the "watch this space" pages. For each
+item, be clear about: why it's exciting, how far away it is, and what a patient can
+do about it now (usually: nothing, but know it exists).
+
+### wiki/personal/
+
+Leave empty for now with a single placeholder page:
+
+```markdown
+---
+title: Your Health Data
+last_updated: [DATE]
+---
+# Personal Health Data
+
+_This section is empty — and that's fine. When you have lab results, doctor's notes,
+imaging reports, or other personal health documents, drop them into the `raw/` folder
+and run `/health-wiki-ingest`. The wiki will interpret your data, track trends over
+time, and cross-reference your results against the research in this wiki._
+
+_Your raw documents are always preserved unedited in `raw/` — the wiki pages here
+are interpretations that link back to your originals._
+```
+
+### Page quality checklist
+
+For every page you write, verify:
+- [ ] Frontmatter is complete (title, tags, last_updated)
+- [ ] Evidence tier callouts are used for every major claim
+- [ ] Wikilinks connect to related pages
+- [ ] The tone is war-room briefing, not encyclopedia
+- [ ] Medical terms are defined inline on first use
+- [ ] It leads with what matters most, not background
+
+## Step 7: Generate Navigation Files
+
+### index.md
+
+Write the full index with one-line summaries for every page created:
+
+```markdown
+---
+title: Index
+---
+# [CONDITION] Wiki
+
+> Your war room. Last compiled: [DATE].
+>
+> This wiki is maintained by an AI following [[CLAUDE|the vault schema]].
+> The human curates sources and asks questions. The AI does everything else.
+
+## Start Here
+- [[wiki/overview]] — The big picture: what you're dealing with and the full landscape
+
+## Understanding the Disease
+- [[wiki/disease/page-name]] — one-line summary
+...
+
+## Treatment Options
+- [[wiki/treatments/page-name]] — one-line summary
+...
+
+## Living With It
+- [[wiki/living/page-name]] — one-line summary
+...
+
+## The Frontier
+- [[wiki/frontier/page-name]] — one-line summary
+...
+
+## Your Health Data
+_No personal data ingested yet. Drop files into `raw/` and run `/health-wiki-ingest`._
+```
+
+### log.md
+
+Write the initial log entry:
+
+```markdown
+---
+title: Log
+---
+# Wiki Log
+
+## [DATE] — init
+- Created wiki for [CONDITION]
+- Context: [WHO this is for, any relevant details from Step 2]
+- Research domains: disease mechanism, treatments, lifestyle, technology, patient communities
+- Generated: [N] wiki pages across 5 domains
+- Sources: web research + LLM knowledge (no personal documents ingested yet)
+- Vault structure: disease/, treatments/, living/, frontier/, personal/
+```
+
+### CLAUDE.md
+
+Generate the vault's own CLAUDE.md — the structural manifest that teaches future
+Claude sessions how to maintain this specific wiki. Include:
+
+- The disease name and who it's for
+- The structural manifest: list every folder and page created, with one-line purposes
+- The wiki voice (reference the war-room briefing persona)
+- All conventions from the WIKI_SCHEMA section above
+- Explicit instruction: "When the user asks about their personal results, always read
+  the original file in raw/, not just the wiki interpretation."
+- Instructions for /health-wiki-ingest, /health-wiki-refresh, /health-wiki-lint
+
+## Step 8: Open in Obsidian
+
+Tell the user:
+
+"Your wiki is ready at `[path]`.
+
+**To open in Obsidian:**
+1. Install Obsidian if you haven't: https://obsidian.md
+2. Open Obsidian
+3. Click 'Open folder as vault' (or File -> Open Vault -> Open folder as vault)
+4. Select `[path]`
+5. Start with the [[overview]] page or the [[index]]
+
+**What's in here:**
+- [N] pages covering [CONDITION] across disease understanding, treatments, lifestyle,
+  and frontier research
+- Evidence is labeled by quality tier — from clinically validated to community anecdotal
+- Everything is cross-linked — click any [[wikilink]] to navigate
+
+**Next steps:**
+- Browse the wiki in Obsidian to get the lay of the land
+- Drop personal health documents (lab results, doctor's notes, imaging) into the
+  `raw/` folder and run `/health-wiki-ingest` to add your personal data
+- Run `/health-wiki-refresh` periodically to update the research
+- Run `/health-wiki-lint` to check for gaps or inconsistencies"
+
+## Edge Cases
+
+- **Vault already exists at path:** Ask the user — overwrite, pick a new name, or
+  abort. Never silently clobber existing data.
+- **Very rare disease:** LLM and web knowledge may be thin. Be honest: "I found limited
+  information on [condition]. The wiki will be thinner than for a common disease —
+  but it's a starting point. Drop research papers and articles into raw/ and run
+  /health-wiki-ingest to build it up."
+- **User gives a symptom cluster, not a diagnosis:** Help them, but be clear: "I'm
+  building this around [symptoms/suspected condition]. If you get a formal diagnosis,
+  we can run /health-wiki-init again for the specific condition."
+- **User is overwhelmed:** The wiki can be a lot. Remind them: "You don't need to read
+  all of this right now. Start with [[overview]] and follow the links that matter to
+  you. The rest will be here when you need it."

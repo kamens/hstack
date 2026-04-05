@@ -59,6 +59,14 @@ const SKILL_EVALS: SkillEval[] = [
       "acute health triage and ongoing case discussion — the '3am worry' tool that " +
       "gives red/yellow/green assessments and reassurance vs. escalation",
   },
+  {
+    skill: "health-wiki-init",
+    focusArea:
+      "bootstrapping a disease-focused Obsidian wiki — researching the full landscape " +
+      "(clinical, treatments, lifestyle, frontier, patient communities) and building " +
+      "a structured, navigable knowledge base with the voice of a proactive doctor " +
+      "who has the disease themselves",
+  },
 ];
 
 const JUDGE_PROMPT = `You are evaluating the quality of an AI health assistant's instruction document (SKILL.md).

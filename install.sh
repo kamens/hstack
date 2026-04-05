@@ -14,6 +14,7 @@ SKILLS=(
   health-understand-results
   health-summarize-research
   health-discuss-case
+  health-wiki-init
 )
 
 for skill in "${SKILLS[@]}"; do

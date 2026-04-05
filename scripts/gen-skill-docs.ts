@@ -5,6 +5,10 @@
  * Reads each SKILL.md.tmpl, replaces {{PLACEHOLDER}} markers with the contents
  * of the corresponding shared/*.md file (lowercased), and writes SKILL.md.
  *
+ * External dependencies (e.g., kepano/obsidian-skills) are fetched from GitHub
+ * at gen time and cached in shared/. If the fetch fails, the last cached copy
+ * is used as a fallback.
+ *
  * Usage:
  *   bun run scripts/gen-skill-docs.ts            # generate all
  *   bun run scripts/gen-skill-docs.ts --dry-run   # compare without writing
@@ -15,6 +19,43 @@ import { join, basename, dirname, relative } from "path";
 const ROOT = dirname(dirname(import.meta.path));
 const SHARED_DIR = join(ROOT, "shared");
 const DRY_RUN = process.argv.includes("--dry-run");
+
+// External dependencies: placeholder name → raw GitHub URL
+// These are fetched fresh on each gen run and cached in shared/<name>.md
+const EXTERNAL_DEPS: Record<string, string> = {
+  obsidian_markdown:
+    "https://raw.githubusercontent.com/kepano/obsidian-skills/main/skills/obsidian-markdown/SKILL.md",
+  defuddle:
+    "https://raw.githubusercontent.com/kepano/obsidian-skills/main/skills/defuddle/SKILL.md",
+};
+
+// Fetch external dependencies into shared/, with fallback to cached copies
+async function syncExternalDeps(): Promise<void> {
+  for (const [name, url] of Object.entries(EXTERNAL_DEPS)) {
+    const dest = join(SHARED_DIR, `${name}.md`);
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const content = await res.text();
+      // Strip frontmatter from fetched skills — we only want the body content
+      const stripped = content.replace(/^---\n[\s\S]*?\n---\n*/, "").trim();
+      const header = `<!-- Fetched from ${url} -->\n<!-- Do not edit — regenerate with: bun run gen:skill-docs -->\n\n`;
+      writeFileSync(dest, header + stripped);
+      console.log(`Fetched: shared/${name}.md (from ${basename(dirname(url))})`);
+    } catch (err) {
+      if (existsSync(dest)) {
+        console.warn(`Warning: Failed to fetch ${name} from GitHub, using cached copy. (${err})`);
+      } else {
+        console.error(`Error: Failed to fetch ${name} from GitHub and no cached copy exists.`);
+        console.error(`  URL: ${url}`);
+        console.error(`  ${err}`);
+        process.exit(1);
+      }
+    }
+  }
+}
+
+await syncExternalDeps();
 
 // Discover all SKILL.md.tmpl files (one level deep)
 const templates: string[] = [];

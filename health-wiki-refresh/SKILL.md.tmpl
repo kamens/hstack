@@ -1,0 +1,245 @@
+---
+name: health-wiki-refresh
+description: |
+  Re-research the state of the art for a disease wiki and update it with the
+  latest findings. Searches for new trial results, treatment approvals, guideline
+  changes, community discoveries, and bleeding-edge research. Can run broad
+  (refresh everything) or focused (e.g., "refresh with the latest GLP-1 data").
+  Use periodically to keep a wiki current, or when you hear about something
+  new and want it woven into the knowledge base.
+---
+
+{{PREAMBLE}}
+
+{{WIKI_SCHEMA}}
+
+{{OBSIDIAN_MARKDOWN}}
+
+{{DEFUDDLE}}
+
+# Refresh the Wiki
+
+**You are the researcher returning with updates.** The wiki was built at some point
+in the past. The world has moved on — new trials reported, new drugs approved, new
+guidelines published, new community threads with practical discoveries. Your job is
+to go find what's changed, bring it back, and weave it into the wiki so the patient's
+war room stays current.
+
+This skill has two modes:
+
+- **Broad refresh** — re-research the entire landscape, update everything that's changed
+- **Focused refresh** — the user has a specific topic they want updated (e.g., "refresh
+  with the latest GLP-1 data for T1D" or "what's new with stem cell trials")
+
+Detect which mode from the user's input. If they just say "refresh" with no specifics,
+run broad. If they mention a topic, run focused.
+
+## Step 1: Find and Read the Vault
+
+Read CLAUDE.md, index.md, and log.md to understand:
+- What disease this wiki covers
+- The structural manifest (what pages exist where)
+- When the wiki was last updated or refreshed (from log.md dates)
+- Who this is for (context from CLAUDE.md)
+
+If no vault found: "I don't see a wiki vault here. Run /health-wiki-init first."
+
+## Step 2: Determine Scope
+
+### If broad refresh:
+
+Read overview.md and skim the key pages across all 5 domains to understand current
+coverage. Note the last refresh/init date from log.md — this is the "since when"
+anchor for research.
+
+Tell the user: "This wiki was last updated [DATE]. I'll search for what's changed
+across all domains — research, treatments, lifestyle, technology, and patient
+communities. This will take a few minutes."
+
+### If focused refresh:
+
+Identify which domain(s) and pages the user's topic maps to. Read those specific
+pages to understand what's currently there.
+
+Tell the user: "I'll search for the latest on [TOPIC] and update the relevant pages.
+The wiki currently covers [brief summary of what's there now]."
+
+## Step 3: Research What's New
+
+### For broad refresh — dispatch 5 subagents in parallel:
+
+Each subagent uses WebSearch to find developments since the last update date.
+
+**Subagent A — Clinical & Frontier Updates:**
+
+"You are tracking clinical research developments for [CONDITION]. Use WebSearch to
+find what has changed since [LAST_UPDATE_DATE]:
+
+- New trial results published or presented at conferences
+- New drugs approved or receiving FDA priority review
+- Updated clinical guidelines
+- New understanding of disease mechanism
+- Early-stage research breakthroughs
+- Search for: '[CONDITION] new research [CURRENT_YEAR]', '[CONDITION] clinical trial
+  results [CURRENT_YEAR]', '[CONDITION] FDA approval [CURRENT_YEAR]'
+
+For each finding: what changed, how significant it is, and whether it affects any
+current wiki content. If nothing significant has changed, say so — don't invent updates."
+
+**Subagent B — Treatment Updates:**
+
+"You are tracking treatment developments for [CONDITION]. Use WebSearch to find what
+has changed since [LAST_UPDATE_DATE]:
+
+- New treatments approved or entering late-stage trials
+- Updated dosing guidelines or comparative effectiveness data
+- New safety signals or black box warnings
+- Changes in standard of care recommendations
+- New clinical trials recruiting
+- Search for: '[CONDITION] treatment update [CURRENT_YEAR]', '[CONDITION] new drug
+  approval', '[CONDITION] clinical trials recruiting'
+
+For each finding: what changed and whether it affects current treatment recommendations
+in the wiki."
+
+**Subagent C — Lifestyle & Integrative Updates:**
+
+"You are tracking lifestyle medicine developments for [CONDITION]. Use WebSearch to
+find what has changed since [LAST_UPDATE_DATE]:
+
+- New nutrition or exercise studies specific to this condition
+- Updated supplement evidence
+- New mental health or quality-of-life research
+- Search for: '[CONDITION] nutrition study [CURRENT_YEAR]', '[CONDITION] exercise
+  research', '[CONDITION] lifestyle intervention'
+
+Report only genuine new findings, not restatements of existing knowledge."
+
+**Subagent D — Technology Updates:**
+
+"You are tracking health technology for [CONDITION]. Use WebSearch to find what has
+changed since [LAST_UPDATE_DATE]:
+
+- New devices, apps, or wearables released or approved
+- Major updates to existing devices
+- New remote monitoring or self-management tools
+- Search for: '[CONDITION] new device [CURRENT_YEAR]', '[CONDITION] app',
+  '[CONDITION] technology FDA cleared'
+
+Be specific about product names and what's actually new vs. incremental updates."
+
+**Subagent E — Veteran Patient Scout (REAL SOURCES ONLY):**
+
+"You are checking patient communities for [CONDITION] for new developments since
+[LAST_UPDATE_DATE]. Use WebSearch to find recent Reddit threads, forum posts, and
+blog posts. Use WebFetch or 'defuddle parse <url> --md' via Bash to read the actual
+content.
+
+ZERO HALLUCINATION RULE: Report ONLY what you find in real sources. Include URLs.
+
+Look for:
+- New community-discovered practical tips or product recommendations
+- Shifting community sentiment about treatments or devices
+- New patient advocacy developments
+- Trending topics or concerns in the community
+- Search for: '[CONDITION] site:reddit.com [CURRENT_YEAR]', 'r/[condition] new',
+  '[CONDITION] patient forum [CURRENT_YEAR]'
+
+If nothing notable has changed in the community, say so."
+
+### For focused refresh — dispatch 1-2 targeted subagents:
+
+Dispatch subagents focused specifically on the user's topic. Use WebSearch with
+targeted queries. For example, if the user asks about GLP-1 data:
+
+"You are researching the latest GLP-1 receptor agonist data for [CONDITION]. Use
+WebSearch to find the most recent trial results, approvals, guideline changes, and
+clinical experience. Search for: 'GLP-1 [CONDITION] [CURRENT_YEAR]', 'semaglutide
+[CONDITION] trial results', 'GLP-1 [CONDITION] guidelines'.
+
+Be thorough — this is a focused deep-dive, not a general scan. Find everything
+available on this specific topic."
+
+Also dispatch the Veteran Patient Scout to search for community discussion of the
+same topic.
+
+## Step 4: Update Wiki Pages
+
+For each finding that represents genuine new information:
+
+### If it updates an existing page:
+
+Edit the page to incorporate the new information. Use an update callout to mark
+what changed:
+
+```markdown
+> [!tip] Updated [DATE]
+> [Brief description of what's new — e.g., "Phase 3 results for baricitinib published."]
+```
+
+If previous information is now outdated or superseded:
+
+```markdown
+> [!caution] Updated [DATE]
+> Previous guidance was [X]. Updated data now shows [Y]. See [source].
+```
+
+Update the page's `last_updated` frontmatter field.
+
+### If it warrants a new page:
+
+Create it in the appropriate folder following the vault's structural manifest and
+conventions. Add it to index.md.
+
+### If nothing significant changed in a domain:
+
+Note it — this is valuable information too. The patient knows their wiki is current.
+
+## Step 5: Update Navigation
+
+### index.md
+
+Add any new pages. Update summaries if page content changed significantly.
+
+### log.md
+
+Append an entry:
+
+```markdown
+## [DATE] — refresh [broad / focused: TOPIC]
+- Researched updates since [LAST_UPDATE_DATE]
+- Updated: [[page1]], [[page2]] (what changed)
+- New pages: [[new-page]] (if any)
+- Confirmed current: [[page3]], [[page4]] (no significant changes)
+- Domains with no updates: [list]
+```
+
+## Step 6: Summary
+
+Tell the user what was found and what changed:
+
+"Refreshed the wiki with updates since [LAST_UPDATE_DATE].
+
+**What's new:**
+- [Finding 1] — updated [[page]]. [One sentence on why it matters.]
+- [Finding 2] — created [[new-page]]. [One sentence.]
+
+**Confirmed current (no significant changes):**
+- [Domain/page list]
+
+**What I'd pay attention to:**
+[1-2 sentences on the most important development and what the patient should do about it.]"
+
+## Edge Cases
+
+- **Very recent init (< 1 week):** Likely nothing has changed. Run the search anyway
+  but set expectations: "The wiki was just created [N days ago]. I'll check for any
+  very recent developments, but there may not be much new."
+- **Focused refresh on a topic not in the wiki:** Create the relevant pages. This is
+  how the wiki grows beyond what init covered.
+- **Conflicting information:** If new research contradicts existing wiki content, update
+  the page to reflect both positions with evidence tiers. Don't silently overwrite.
+- **User provides a URL:** If the user says "refresh with this article: [URL]", fetch
+  and read it (prefer `defuddle parse <url> --md` for web pages), then weave its
+  contents into the relevant wiki pages. This bridges refresh and ingest — the user
+  found something interesting and wants it incorporated.

@@ -75,6 +75,20 @@ const SKILL_EVALS: SkillEval[] = [
       "research into existing wiki pages, cross-referencing, and maintaining provenance " +
       "back to original unedited sources",
   },
+  {
+    skill: "health-wiki-refresh",
+    focusArea:
+      "re-researching the state of the art for a disease and updating the wiki — " +
+      "finding bleeding-edge trial results, new approvals, community discoveries, " +
+      "with both broad (refresh everything) and focused (specific topic) modes",
+  },
+  {
+    skill: "health-wiki-lint",
+    focusArea:
+      "health-checking a disease wiki for structural issues (broken links, orphans, " +
+      "stale index) and content quality (contradictions, stale claims, missing cross-" +
+      "references, gaps in coverage) with auto-fix for structural and report for content",
+  },
 ];
 
 const JUDGE_PROMPT = `You are evaluating the quality of an AI health assistant's instruction document (SKILL.md).

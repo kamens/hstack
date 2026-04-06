@@ -175,7 +175,7 @@ hstack: [asks about recent illness, fever, when pain started, whether
 
 Asking a T1D wiki about actionable lifestyle tips — it pulls from the nutrition, exercise, and living-with sections, cross-references personal lab data, and gives specific, wiki-grounded recommendations:
 
-![Wiki Q&A example — asking about lifestyle tips and getting specific, wiki-grounded recommendations](assets/wiki-qa-example.png)
+![Wiki Q&A example — asking about lifestyle tips and getting specific, wiki-grounded recommendations](assets/wiki-lifestyle.png)
 
 ## Important
 

@@ -18,6 +18,7 @@ SKILLS=(
   hstack-wiki-ingest
   hstack-wiki-refresh
   hstack-wiki-lint
+  hstack-wiki-battle-plan
 )
 
 for skill in "${SKILLS[@]}"; do

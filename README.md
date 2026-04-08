@@ -55,6 +55,7 @@ Following [Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf
 | `/hstack-wiki-ingest` | Processes files you drop into `raw/` — personal lab results, doctor's notes, articles you found interesting. Interprets them, weaves them into the wiki, cross-references with existing content. |
 | `/hstack-wiki-refresh` | Re-researches the landscape and updates the wiki with what's changed. Broad ("refresh everything") or focused ("refresh with the latest GLP-1 data for T1D"). Collects new sources first, then compiles updates. |
 | `/hstack-wiki-lint` | Health-checks the wiki for broken links, missing cross-references, stale content, contradictions, and gaps. Auto-fixes structural issues, flags content issues for you. |
+| `/hstack-wiki-battle-plan` | Reads the entire wiki and your personal data, then creates a proactive, prioritized battle plan — tiered from clinically validated down to long-tail internet wisdom. If a prior plan exists, highlights what changed and why. |
 
 **Core principles:**
 

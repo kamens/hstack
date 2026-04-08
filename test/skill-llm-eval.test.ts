@@ -89,6 +89,14 @@ const SKILL_EVALS: SkillEval[] = [
       "stale index) and content quality (contradictions, stale claims, missing cross-" +
       "references, gaps in coverage) with auto-fix for structural and report for content",
   },
+  {
+    skill: "hstack-wiki-battle-plan",
+    focusArea:
+      "building a comprehensive, tiered proactive strategy for fighting a disease — " +
+      "reading the entire wiki and patient data, synthesizing prioritized recommendations " +
+      "from clinically validated to anecdotal, producing a dated plan with honest evidence " +
+      "calibration, and diffing against prior plans to highlight what changed",
+  },
 ];
 
 const JUDGE_PROMPT = `You are evaluating the quality of an AI health assistant's instruction document (SKILL.md).

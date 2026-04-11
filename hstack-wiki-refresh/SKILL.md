@@ -643,7 +643,10 @@ Read the newly collected raw/ sources and update the wiki:
 
 - Update `_index.md` in every modified folder
 - Update root `index.md`
-- Update `CLAUDE.md` structural manifest if structure changed
+- If structure changed, re-render CLAUDE.md from the template in
+  `shared/wiki_claude_md.tmpl` with updated vault structure.
+  Read the existing CLAUDE.md to get the other parameter values. Do not add, remove,
+  or reword template sections.
 - Append to `log.md`
 
 ## Step 6: Summary

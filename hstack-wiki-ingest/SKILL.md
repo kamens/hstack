@@ -657,7 +657,10 @@ pages need updating with new information, update them.
 - Update `_index.md` in every folder that was modified
 - Update root `index.md` with any new pages or sections
 - Append to `log.md` with details of what was processed and what was created/updated
-- Update `CLAUDE.md` structural manifest if new folders were created
+- If new folders were created, re-render CLAUDE.md from the template in
+  `shared/wiki_claude_md.tmpl` with updated vault structure.
+  Read the existing CLAUDE.md to get the other parameter values. Do not add, remove,
+  or reword template sections.
 
 ## Step 7: Summary
 

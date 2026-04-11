@@ -617,6 +617,11 @@ No other wiki/ subfolders yet — those emerge from the sources in Phase 2.
 
 ## Step 5: Collect Sources (Phase 1)
 
+**Quicktest mode:** If the user invoked this skill with the argument "quicktest",
+each collector subagent must save at most 3 sources and then stop. Skip the
+exhaustive searching instructions below — just find 3 good sources per domain
+and move on. This produces a thin but structurally complete wiki for testing.
+
 This is the most important step. Dispatch 5 Agent subagents **simultaneously** to
 search the web and collect real sources into raw/. Each subagent uses WebSearch to
 find sources, then saves each valuable source to raw/ using defuddle:
@@ -831,33 +836,21 @@ is the entry point for both human browsing and LLM navigation.
 
 ### CLAUDE.md
 
-Generate the vault's CLAUDE.md. This is the most important file in the vault — it
-tells every future Claude session how to behave when working in this directory.
+Generate the vault's CLAUDE.md by rendering the template in `shared/wiki_claude_md.tmpl`.
+Read the template file first. It contains placeholder markers (CONDITION, CONDITION_SHORT,
+WHO, PATIENT_CONTEXT, VAULT_STRUCTURE, SOURCE_COUNT, COMPILED_DATE).
+Replace each placeholder with the actual values for this vault:
 
-Include:
-- Disease name and who it's for
-- Complete manifest of folders and pages created, with purposes
-- The wiki voice (reference the preamble persona)
-- All conventions from WIKI_SCHEMA
-- Instructions for /hstack-wiki-ingest, /hstack-wiki-refresh, /hstack-wiki-lint
+- **CONDITION** — Full disease name (e.g., "Type 1 Diabetes")
+- **CONDITION_SHORT** — Abbreviation (e.g., "T1D")
+- **WHO** — Patient's name
+- **PATIENT_CONTEXT** — Multi-line block: age, diagnosis, current treatment, care team
+- **VAULT_STRUCTURE** — ASCII folder tree showing all sections with page counts
+- **SOURCE_COUNT** — Number of files in raw/
+- **COMPILED_DATE** — Today's date (YYYY-MM-DD)
 
-**Querying — the wiki as primary source:**
-- "This vault is a curated knowledge base compiled from real sources. When answering
-  questions about [CONDITION], always read index.md and the relevant wiki pages first.
-  Ground your answers in the wiki's compiled content and cite specific pages. The wiki
-  is the primary source — do not answer from training data alone when wiki content
-  exists on the topic."
-- "When discussing personal results, always read the original file in raw/, not just
-  the wiki's interpretation."
-- "If the wiki doesn't cover something the user asks about, say so — and offer to
-  research it and add new sources (via /hstack-wiki-refresh or by collecting sources
-  into raw/ and running /hstack-wiki-ingest)."
-
-**Filing answers back — explorations compound:**
-- "When a conversation produces a valuable analysis, comparison, or connection that
-  doesn't exist in the wiki yet, offer to file it as a new wiki page. The user's
-  explorations and questions should compound in the knowledge base, not disappear
-  into chat history."
+Write the rendered output as the vault's CLAUDE.md. Do not add, remove, or reword
+sections — the template is the canonical source for vault behavior.
 
 ### log.md
 

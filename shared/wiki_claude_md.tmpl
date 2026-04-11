@@ -35,18 +35,28 @@ When a conversation produces a valuable analysis that doesn't exist in the wiki 
 offer to save it as a new page. The user's questions should make the wiki better
 over time.
 
-## Patient context
+## Patient
 
-{{PATIENT_CONTEXT}}
-
-For current status, labs, and upcoming appointments, read the pages in
-`wiki/personal/`.
+This wiki is for {{WHO}}. Read `wiki/personal/` for their diagnosis, treatment,
+care team, and current status.
 
 ## Vault structure
 
 ```
-{{VAULT_STRUCTURE}}
+[vault]/
+├── CLAUDE.md          ← This file
+├── index.md           ← Root navigation map
+├── log.md             ← Append-only audit trail
+├── raw/               ← Immutable source files
+└── wiki/              ← LLM-compiled pages
+    ├── _index.md      ← Top-level summary
+    ├── [sections]/    ← Emergent from content — read _index.md files to navigate
+    ├── concepts/      ← Standalone reference pages
+    └── personal/      ← Patient-specific data
 ```
+
+Read `index.md` for the full page map. Read `_index.md` in any section to see
+what's inside it.
 
 ## Layer rules
 

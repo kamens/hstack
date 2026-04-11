@@ -290,14 +290,11 @@ is the entry point for both human browsing and LLM navigation.
 
 Generate the vault's CLAUDE.md by rendering the template in `shared/wiki_claude_md.tmpl`.
 Read the template file first. It contains placeholder markers (CONDITION, CONDITION_SHORT,
-WHO, PATIENT_CONTEXT, VAULT_STRUCTURE, SOURCE_COUNT, COMPILED_DATE).
-Replace each placeholder with the actual values for this vault:
+WHO, SOURCE_COUNT, COMPILED_DATE). Replace each with the actual values for this vault:
 
 - **CONDITION** — Full disease name (e.g., "Type 1 Diabetes")
 - **CONDITION_SHORT** — Abbreviation (e.g., "T1D")
 - **WHO** — Patient's name
-- **PATIENT_CONTEXT** — Multi-line block: age, diagnosis, current treatment, care team
-- **VAULT_STRUCTURE** — ASCII folder tree showing all sections with page counts
 - **SOURCE_COUNT** — Number of files in raw/
 - **COMPILED_DATE** — Today's date (YYYY-MM-DD)
 

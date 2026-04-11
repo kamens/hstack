@@ -26,7 +26,7 @@ For someone dealing with a specific disease, hstack can also build a personal, d
 
 Open Claude Code and paste this. Claude does the rest.
 
-> Install hstack: clone the repo with **`git clone https://github.com/kamens/hstack ~/.claude/skills/hstack`**, then ask me whether I want skills installed **globally** (available in all projects) or **locally** (scoped to the current project only). Run `~/.claude/skills/hstack/install.sh --global` for global, or `~/.claude/skills/hstack/install.sh --project` for project-local.
+> Install hstack: clone the repo with **`git clone https://github.com/kamens/hstack ~/.claude/skills/hstack`**, then use AskUserQuestion to ask whether I want skills installed globally or project-locally. Then run `~/.claude/skills/hstack/install.sh --global` or `~/.claude/skills/hstack/install.sh --project` based on my answer.
 
 Start a new Claude Code session and the `/hstack-*` commands are available immediately.
 

@@ -46,11 +46,11 @@ know about the situation?"
 
 ## Step 3: Choose Location
 
-Use AskUserQuestion:
+Use AskUserQuestion with three options:
 
-"Where should I create the wiki vault?
-
-Default: `~/[condition-name]-wiki/`"
+- **./[condition-name]-wiki/** (Recommended) — Create in the current directory.
+- **~/[condition-name]-wiki/** — Create in the home folder.
+- **Choose a different location** — Let me pick the path.
 
 ## Step 4: Scaffold the Vault
 
@@ -70,8 +70,8 @@ No other wiki/ subfolders yet — those emerge from the sources in Phase 2.
 ## Step 5: Collect Sources (Phase 1)
 
 **Quicktest mode:** If the user invoked this skill with the argument "quicktest",
-each collector subagent must save at most 3 sources and then stop. Skip the
-exhaustive searching instructions below — just find 3 good sources per domain
+each collector subagent must save at most 2 sources and then stop. Skip the
+exhaustive searching instructions below — just find 2 good sources per domain
 and move on. This produces a thin but structurally complete wiki for testing.
 
 This is the most important step. Dispatch 5 Agent subagents **simultaneously** to
@@ -305,13 +305,23 @@ sections — the template is the canonical source for vault behavior.
 
 Write the initial log entry recording what was collected and compiled.
 
-## Step 8: Open in Obsidian
+## Step 8: Getting Started
 
 Tell the user:
 
 "Your wiki is ready at `[path]`.
 
-**To open in Obsidian:**
+**Start using it:**
+
+Open a new terminal and run:
+```
+cd [path] && claude
+```
+
+This starts a Claude Code session inside the wiki. The CLAUDE.md there turns
+Claude into your disease-specialized research partner — ask it anything.
+
+**Browse in Obsidian:**
 1. Install Obsidian if you haven't: https://obsidian.md
 2. Open Obsidian → 'Open folder as vault' → select `[path]`
 3. Start with the index or browse the folder hierarchy

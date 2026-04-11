@@ -24,7 +24,7 @@ if [ "$1" = "--global" ]; then
 elif [ "$1" = "--project" ]; then
   SKILLS_DIR="$(pwd)/.claude/skills"
 else
-  # Interactive prompt
+  # Interactive prompt (for manual terminal use)
   echo "Where should hstack skills be installed?"
   echo ""
   echo "  1) Global (default) — available in all projects"

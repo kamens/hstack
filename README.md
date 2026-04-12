@@ -1,6 +1,6 @@
 # hstack (health stack)
 
-A stack of tools and agents built to help those who use LLMs as healthcare advisors.
+A stack of tools and agents built to help those who use LLMs as healthcare advisors. [Read more on my blog](https://kamens.com/blog/llm-wiki-for-fighting-disease).
 
 I find myself constantly talking to LLMs when dealing with health situations on behalf of family, extended family, extended-extended family, friends...
 

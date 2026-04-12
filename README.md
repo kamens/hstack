@@ -1,10 +1,10 @@
-# hstack
+# hstack (health stack)
+
+A stack of tools and agents built to help those who use LLMs as healthcare advisors.
 
 I find myself constantly talking to LLMs when dealing with health situations on behalf of family, extended family, extended-extended family, friends...
 
-Understanding results. Preparing questions for the next doctor visit. Breaking down diagnoses. Mapping out treatment options. Summarizing bleeding-edge research. Reviewing the last few visits and spotting what doesn't add up.
-
-Every time, I'm re-doing prompts from scratch. Re-explaining context. Re-building the same workflows I've built a dozen times before.
+Interpreting results, preparing questions for the next doctor visit, simplifying medical-speak, understanding the nuance in diagnoses, mapping out treatment options, summarizing bleeding-edge research, spotting what's falling through the cracks.
 
 Inspired by the unreasonable effectiveness of [Garry Tan's gstack](https://github.com/garrytan/gstack), Every's [Compound Engineering plugin](https://github.com/EveryInc/compound-engineering-plugin), and [Andrej Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f), **hstack is a collection of tools and agent specialists built to help those who use LLMs as healthcare advisors.** It's not a doctor — but it'll help you better understand them, communicate with them, interpret your own results, and make more informed decisions about your care.
 

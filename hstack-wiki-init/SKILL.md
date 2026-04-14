@@ -166,6 +166,18 @@ when the sources suggest more specific, useful groupings.
 The one exception: **personal/** remains a fixed namespace for patient-specific data,
 since it's structurally different from research content.
 
+### When to make a section vs. a page
+
+A top-level section should represent a major concern area a patient would navigate
+to — something with enough depth that you'd browse *into* it. If a folder would only
+have 2-3 pages, those pages probably belong inside a broader section. For example,
+mental health and community wisdom are pages inside `living-with-X/`, not their own
+top-level sections.
+
+Name sections from the patient's perspective, not a clinical taxonomy. `treatment/`
+not `drug-pipeline/`. `living-with-X/` not `psychosocial-aspects/`. The patient is
+looking for where to find answers, not how a textbook would classify them.
+
 ### Progressive disclosure with _index.md
 
 Every folder in wiki/ gets an `_index.md` file — a summary of what's in that folder
@@ -174,8 +186,19 @@ and its subfolders. This serves two purposes:
 2. **LLM navigation:** future LLM sessions can read `_index.md` files to understand the
    wiki's structure and find relevant content without reading everything
 
-An `_index.md` should be a concise summary: what this section covers, one-line
-descriptions of each page/subfolder, and what the key takeaways are.
+An `_index.md` is where you earn your keep — don't just list pages, **give the
+reader the conceptual map of the domain.** The index should be the page someone
+reads to understand the landscape *before* drilling into any single topic. After
+reading it, they should know what the major categories are, how they relate to
+each other, and where the action is.
+
+For a treatment section, this means: what are the different approaches being
+pursued, what's the mechanism of each, which are available now vs. in trials vs.
+early research, and what's the realistic timeline. For a monitoring section: what
+are you tracking, why each matters, and how they connect. For a living-with
+section: what are the major daily challenges and which pages address them. The
+principle is the same everywhere — the index gives the map, the pages give the
+territory.
 
 ### Concept pages
 
